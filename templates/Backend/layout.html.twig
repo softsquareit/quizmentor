@@ -1,0 +1,446 @@
+{% extends 'Backend/base.html.twig' %}
+{% block body %}
+
+                     <!-- Danger modal -->
+                <div id="modal_add_question" class="modal fade " tabindex="-1">
+                    <div class="modal-dialog  modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header  bg-teal">
+                                <h6 class="modal-title">Ajouter une question</h6>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                    <div class="col-lg-12 row text-center">
+                                        <div class="col-lg-3 text-center">
+                                          <a href="{{ path('backend_question_add', {'type':'unique'}) }}" class="btn btn-primary btn-float"><i class="icon-clipboard2 icon-2x"></i> <span>Choix unique</span></a>
+                                        </div>
+                                        <div class="col-lg-3 text-center">
+                                          <a href="{{ path('backend_question_add', {'type':'multiple'}) }}" class="btn bg-purple-400 btn-float"><i class="icon-list icon-2x"></i> <span>Choix multiple</span></a>
+                                        </div>
+                                        <div class="col-lg-3 text-center">
+                                          <a href="{{ path('backend_question_add', {'type':'text'}) }}" class="btn bg-teal-400 btn-float"><i class="icon-pencil7 icon-2x"></i> <span>Réponse text</span></a>
+                                        </div>
+                                        <div class="col-lg-3 text-center">
+                                          <a href="{{ path('backend_question_add', {'type':'blanks'}) }}" class="btn btn-danger btn-float"><i class="icon-insert-template icon-2x"></i> <span>Filling the blanks</span></a>
+                                        </div>
+                                     </div>
+                            </div>
+
+                            <div class="modal-footer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /default modal -->
+
+	<!-- Main navbar -->
+	<div class="navbar navbar-expand-md navbar-light bg-light navbar-static">
+		<div class="navbar-brand">
+			<span style="display: inline-flex;font-size: 20px;">
+								<img src="{{ absolute_url(asset('backend/img/logo-xs.png')) }}" width="20" style="width:50px !important; height:50px !important" >
+						<b style="padding: 10px;color: #225b8e;">Quiz Mentor</b> 
+					</span>
+		</div>
+
+		<div class="d-md-none">
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-mobile">
+				<i class="icon-tree5"></i>
+			</button>
+			<button class="navbar-toggler sidebar-mobile-main-toggle" type="button">
+				<i class="icon-paragraph-justify3"></i>
+			</button>
+		</div>
+
+		<div class="collapse navbar-collapse" id="navbar-mobile">
+			<ul class="navbar-nav ml-md-auto">
+
+				     {% if is_granted('ROLE_FAMILY') %}
+                         <li class="nav-item"> 
+                            <a href="{{ path('backend_dashboard') }}"  class="navbar-nav-link"  style="background: #a31a5c;
+    color: white;
+    border-radius: 20px;" >
+                                 {% if app.user.studentactive is not null %}
+                                 <b>Enfant : {{ app.user.studentactive.firstname }} {{ app.user.studentactive.lastname }} </b>
+                                 {% endif %}
+                            </a> 
+                        </li>
+
+                          {% endif %}
+                          {% if is_granted('ROLE_FORMER') %}
+                         <li class="nav-item"> 
+                            <a href="{{ path('backend_dashboard') }}"  class="navbar-nav-link"  style="background-color: rgb(10, 74, 130);
+    color: white;
+    border-radius: 20px;" >
+                                 {% if app.user.classroomactive is not null %}
+                                 <b>Classe : {{ app.user.classroomactive.name }}  </b>
+                                 {% endif %}
+                                 
+                            </a> 
+                        </li>
+                        <li class="nav-item"> 
+                            <a href="{{ path('backend_dashboard') }}"  class="navbar-nav-link"  style="background: #a31a5c;
+    color: white;
+    border-radius: 20px;" >
+                                 {% if app.user.studentactive is not null %}
+                                 <b>élève : {{ app.user.studentactive.firstname }} {{ app.user.studentactive.lastname }} </b>
+                                 {% endif %}
+                            </a> 
+                        </li>
+
+                          {% endif %}
+				<li class="nav-item">
+					<a class="navbar-nav-link">
+					<b>{{ app.user.firstName }} {{ app.user.lastName }}</b></a>
+               </li>                             
+				<li class="nav-item">
+					<a href="{{ path('app_logout') }}" class="navbar-nav-link">
+						Déconnexion . <i class="icon-switch2"></i> 
+						<span class="d-md-none ml-2">Logout</span>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<!-- /main navbar -->
+	<!-- Page content -->
+	<div class="page-content">
+{% if is_granted('ROLE_ADMIN') %} 
+		<!-- Main sidebar -->
+		<div class="sidebar sidebar-light sidebar-main sidebar-expand-md">
+
+			<!-- Sidebar mobile toggler -->
+			<div class="sidebar-mobile-toggler text-center">
+				<a href="#" class="sidebar-mobile-main-toggle">
+					<i class="icon-arrow-left8"></i>
+				</a>
+				Navigation
+				<a href="#" class="sidebar-mobile-expand">
+					<i class="icon-screen-full"></i>
+					<i class="icon-screen-normal"></i>
+				</a>
+			</div>
+			<!-- /sidebar mobile toggler -->
+
+
+			<!-- Sidebar content -->
+			<div class="sidebar-content">
+
+				<!-- User menu -->
+				<div class="sidebar-user-material" style="background: #176482;">
+					<div class="sidebar-user-material-body">
+						<div class="card-body text-center">
+							<a href="{{ path('backend_dashboard') }}">
+								
+								<img src="{{asset('backend/img/logoback.png')}}" alt="logo" width="100" style="width: 100px !important;" /> 
+							</a>
+							<h6 class="mb-0 text-white text-shadow-dark" style="color: #ffffff !important;">
+								<b>{{ app.user.firstName }} {{ app.user.lastName }}</b></h6>
+						</div>
+					</div>
+				</div>
+				<!-- /user menu -->
+
+				<!-- Main navigation -->
+				<div class="card card-sidebar-mobile">
+					<ul class="nav nav-sidebar" data-nav-type="accordion">
+
+						<!-- Main -->
+
+						{% if is_granted('ROLE_ADMIN') %} 
+						
+						<li class="nav-item">
+							<a href="{{ path('backend_dashboard') }}" class="nav-link">
+								<i class="icon-home4"></i>
+								<span>
+									Dashboard
+								</span>
+							</a>
+						</li>
+						<li class="nav-item nav-item-submenu">
+							<a href="#" class="nav-link"><i class="icon-earth"></i> <span>Prérequis</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Layouts">
+								<li class="nav-item"><a href="{{ path('backend_gap_listeprerequis') }}" class="nav-link"><i class="icon-list2"></i>Liste des prerequis</a></li>
+							</ul>
+						</li>
+						<li class="nav-item nav-item-submenu">
+							<a href="#" class="nav-link"><i class="icon-earth"></i> <span>Lacune</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Layouts">
+								<li class="nav-item"><a href="{{ path('backend_gap_liste') }}" class="nav-link"><i class="icon-list2"></i>Liste des Lacunes</a></li>
+							</ul>
+						</li>
+
+						<li class="nav-item nav-item-submenu">
+							<a href="#" class="nav-link"><i class="icon-earth"></i> <span>Cours</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Layouts">
+								<li class="nav-item"><a href="{{ path('backend_lesson_liste') }}" class="nav-link"><i class="icon-list2"></i>Liste des Cours</a></li>
+							</ul>
+						</li>
+
+						<li class="nav-item-header">
+							<div class="text-uppercase font-size-lg line-height-lg">Question/Quiz</div>
+							 <i class="icon-menu" title="Main"></i>
+						</li>
+						<li class="nav-item nav-item-submenu">
+							<a href="#" class="nav-link"><i class="icon-earth"></i> <span>Question</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Layouts">
+								<li class="nav-item"><a href="{{ path('backend_question_liste') }}" class="nav-link"><i class="icon-list2"></i>Liste des Questions</a></li>
+							</ul>
+						</li>
+						<li class="nav-item nav-item-submenu">
+							<a href="#" class="nav-link"><i class="icon-earth"></i> <span>Quiz</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Layouts">
+								<li class="nav-item"><a href="{{ path('backend_quiz_liste') }}" class="nav-link"><i class="icon-list2"></i>Liste des Quiz</a></li>
+								<li class="nav-item"><a href="{{ path('backend_quiz_add') }}" class="nav-link"><i class="icon-import"></i>Ajouter</a></li>
+							</ul>
+						</li>
+
+						<li class="nav-item-header">
+							<div class="text-uppercase font-size-lg line-height-lg">Catalogue</div>
+							 <i class="icon-menu" title="Main"></i>
+						</li>{% endif %}
+						{% if is_granted('ROLE_ADMIN') %} 
+
+						<li class="nav-item nav-item-submenu">
+							<a href="#" class="nav-link"><i class="icon-earth"></i> <span>Badge</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Layouts">
+								<li class="nav-item"><a href="{{ path('backend_badge_liste') }}" class="nav-link"><i class="icon-list2"></i>Liste des Badges</a></li>
+								<li class="nav-item"><a href="{{ path('backend_badge_add') }}" class="nav-link"><i class="icon-import"></i>Ajouter</a></li>
+							</ul>
+						</li>
+						<li class="nav-item nav-item-submenu">
+							<a href="#" class="nav-link"><i class="icon-earth"></i> <span>Point Badge</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Layouts">
+								<li class="nav-item"><a href="{{ path('backend_point_liste') }}" class="nav-link"><i class="icon-list2"></i>Liste des Points Badges</a></li>
+								<li class="nav-item"><a href="{{ path('backend_point_add') }}" class="nav-link"><i class="icon-import"></i>Ajouter</a></li>
+							</ul>
+						</li>
+
+						<li class="nav-item nav-item-submenu">
+							<a href="#" class="nav-link"><i class="icon-earth"></i> <span>Niveau</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Layouts">
+								<li class="nav-item"><a href="{{ path('backend_level_liste') }}" class="nav-link"><i class="icon-list2"></i>Liste des Niveaux</a></li>
+								<li class="nav-item"><a href="{{ path('backend_level_add') }}" class="nav-link"><i class="icon-import"></i>Ajouter</a></li>
+							</ul>
+						</li>
+						<li class="nav-item nav-item-submenu">
+							<a href="#" class="nav-link"><i class="icon-earth"></i> <span>Trimester</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Layouts">
+								<li class="nav-item"><a href="{{ path('backend_trimester_liste') }}" class="nav-link"><i class="icon-list2"></i>Liste des Trimestres</a></li>
+								<li class="nav-item"><a href="{{ path('backend_trimester_add') }}" class="nav-link"><i class="icon-import"></i>Ajouter</a></li>
+							</ul>
+						</li>
+						<li class="nav-item nav-item-submenu">
+							<a href="#" class="nav-link"><i class="icon-earth"></i> <span>Matière</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Layouts">
+								<li class="nav-item"><a href="{{ path('backend_subject_liste') }}" class="nav-link"><i class="icon-list2"></i>Liste des  matières</a></li>
+								<li class="nav-item"><a href="{{ path('backend_subject_add') }}" class="nav-link"><i class="icon-import"></i>Ajouter</a></li>
+							</ul>
+						</li>
+
+						<li class="nav-item-header">
+							<div class="text-uppercase font-size-lg line-height-lg">Utilisateurs</div>
+							 <i class="icon-menu" title="Main"></i>
+						</li>
+						<li class="nav-item nav-item-submenu">
+							<a href="#" class="nav-link"><i class="icon-earth"></i> <span>Classes</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Layouts">
+								<li class="nav-item"><a href="{{ path('backend_classroom_liste') }}" class="nav-link"><i class="icon-list2"></i>Liste des Classes</a></li>
+								<li class="nav-item"><a href="{{ path('backend_classroom_add') }}" class="nav-link"><i class="icon-import"></i>Ajouter</a></li>
+							</ul>
+						</li>
+
+						<li class="nav-item nav-item-submenu">
+							<a href="#" class="nav-link"><i class="icon-earth"></i> <span>Éleves</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Layouts">
+								<li class="nav-item"><a href="{{ path('backend_student_liste') }}" class="nav-link"><i class="icon-list2"></i>Liste des Éleves</a></li>
+								<li class="nav-item"><a href="{{ path('backend_student_add') }}" class="nav-link"><i class="icon-import"></i>Ajouter</a></li>
+							</ul>
+						</li>
+						<li class="nav-item nav-item-submenu">
+							<a href="#" class="nav-link"><i class="icon-earth"></i> <span>Parents</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Layouts">
+								<li class="nav-item"><a href="{{ path('backend_family_liste') }}" class="nav-link"><i class="icon-list2"></i>Liste des Parents</a></li>
+								<li class="nav-item"><a href="{{ path('backend_family_add') }}" class="nav-link"><i class="icon-import"></i>Ajouter</a></li>
+							</ul>
+						</li>
+						<li class="nav-item nav-item-submenu">
+							<a href="#" class="nav-link"><i class="icon-earth"></i> <span>Formateurs</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Layouts">
+								<li class="nav-item"><a href="{{ path('backend_former_liste') }}" class="nav-link"><i class="icon-list2"></i>Liste des Formateurs</a></li>
+								<li class="nav-item"><a href="{{ path('backend_former_add') }}" class="nav-link"><i class="icon-import"></i>Ajouter</a></li>
+							</ul>
+						</li>
+						<li class="nav-item nav-item-submenu">
+							<a href="#" class="nav-link"><i class="icon-earth"></i> <span>Utilisateurs</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Layouts">
+								<li class="nav-item"><a href="{{ path('backend_users_liste') }}" class="nav-link"><i class="icon-list2"></i>Liste des utilisateurs</a></li>
+								<li class="nav-item"><a href="{{ path('backend_users_add') }}" class="nav-link"><i class="icon-import"></i>Ajouter</a></li>
+							</ul>
+						</li>
+
+						<li class="nav-item ">
+							<a href="{{ path('backend_users_compte') }}" class="nav-link"><i class="icon-users2"></i> <span>Mon Compte</span></a>
+						</li>
+						
+		
+						{% endif %}
+
+
+
+						<!-- /main -->
+
+					</ul>
+				</div>
+				<!-- /main navigation -->
+			
+
+                     <!-- Danger modal -->
+                <div id="modal_add_question" class="modal fade " tabindex="-1">
+                    <div class="modal-dialog  modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header  bg-teal">
+                                <h6 class="modal-title">Ajouter une question</h6>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                    <div class="col-lg-12 row text-center">
+                                        <div class="col-lg-3 text-center">
+                                          <a href="{{ path('backend_question_add', {'type':'unique'}) }}" class="btn btn-primary btn-float"><i class="icon-clipboard2 icon-2x"></i> <span>Choix unique</span></a>
+                                        </div>
+                                        <div class="col-lg-3 text-center">
+                                          <a href="{{ path('backend_question_add', {'type':'multiple'}) }}" class="btn bg-purple-400 btn-float"><i class="icon-list icon-2x"></i> <span>Choix multiple</span></a>
+                                        </div>
+                                        <div class="col-lg-3 text-center">
+                                          <a href="{{ path('backend_question_add', {'type':'text'}) }}" class="btn bg-teal-400 btn-float"><i class="icon-pencil7 icon-2x"></i> <span>Réponse text</span></a>
+                                        </div>
+                                        <div class="col-lg-3 text-center">
+                                          <a href="{{ path('backend_question_add', {'type':'blanks'}) }}" class="btn btn-danger btn-float"><i class="icon-insert-template icon-2x"></i> <span>Filling the blanks</span></a>
+                                        </div>
+                                     </div>
+                            </div>
+
+                            <div class="modal-footer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /default modal -->
+	
+			</div>
+			<!-- /sidebar content -->
+			
+		</div>
+		<!-- /main sidebar -->
+{% else %}
+<div class="sidebar sidebar-light sidebar-main sidebar-expand-md" style="background:transparent;    min-width: 20%; ">
+{% if  is_granted('ROLE_STUDENT') and  app.user.badge is not null %} 
+<div class="card border-left-3 border-left-primary rounded-left-0">
+	<div class="card-body">
+		<div class="d-sm-flex align-item-sm-center flex-sm-nowrap">
+			<div class="row col-lg-12" style="background: white;
+    border-radius: 20px;">
+    <ul class="nav nav-sidebar" data-nav-type="accordion">
+     <li class="nav-item ">
+                                  <a href="#" class="nav-link btn btn-block btn-float m-0 legitRipple "><img src="{{ absolute_url(asset('upload/badge/'~ app.user.badge.icon )) }}" width="40" style="width:40px !important" >
+                                 <div>{{ app.user.badge.intitule }} <div class="opacity-50">{{ app.user.point }} </div></div></a>      
+        </li>
+        
+     </ul>
+			</div>
+		</div>
+	</div>
+</div>
+ {% endif %}
+
+{% if ( is_granted('ROLE_FORMER') or is_granted('ROLE_FAMILY'))  and  app.user.studentactive is not null and app.user.studentactive.badge is not null  %} 
+
+ <div class="card border-left-3 border-left-primary rounded-left-0">
+	<div class="card-body">
+		<div class="d-sm-flex align-item-sm-center flex-sm-nowrap">
+			<div class="row col-lg-12" style="background: white;
+    border-radius: 20px;">
+    <ul class="nav nav-sidebar" data-nav-type="accordion">
+     <li class="nav-item ">
+                                  <a href="#" class="nav-link btn btn-block btn-float m-0 legitRipple "><img src="{{ absolute_url(asset('upload/badge/'~ app.user.studentactive.badge.icon )) }}" width="40" style="width:40px !important" >
+                                 <div>Badge Quiz <div class="opacity-50">{{ app.user.studentactive.badge.intitule }} </div></div></a>      
+        </li>
+        
+     </ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+ {% endif %}
+<div class="card border-left-3 border-left-primary rounded-left-0">
+	<div class="card-body">
+		<div class="d-sm-flex align-item-sm-center flex-sm-nowrap">
+			<div class="row col-lg-12" style="background: white;
+    border-radius: 20px;">
+					<ul class="nav nav-sidebar" data-nav-type="accordion">
+{{ app.user.point }}**
+				{% if app.user.active  %}  
+						 {{ render(controller(
+        'App\\Controller\\Backend\\DefaultController::menustudent')) }}
+		{% endif %}</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="card border-left-3 border-left-primary rounded-left-0">
+	<div class="card-body">
+		<div class="d-sm-flex align-item-sm-center flex-sm-nowrap">
+			<div class="row col-lg-12" style="background: white;
+    border-radius: 20px;">
+    <ul class="nav nav-sidebar" data-nav-type="accordion">
+     <li class="nav-item ">
+                            <a href="{{ path('backend_dashboardprogress') }}" class="nav-link btn btn-block btn-float m-0 legitRipple "><i class="icon-stats-dots text-success  mr-3 icon-2x"></i>
+                                 <div>Progrés, <div class="opacity-50">Mes progrés {{ app.user.id }} </div></div></a>
+        </li>
+
+     </ul>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+{% endif %}
+		<!-- Main content -->
+		<div class="content-wrapper">
+
+			{% block content %}
+    
+			{% endblock %}
+
+								
+
+						
+
+			<!-- Footer -->
+			<div class="navbar navbar-expand-lg " style="background: white;">
+				<div class="text-center d-lg-none w-100">
+					<button type="button" class="navbar-toggler dropdown-toggle" data-toggle="collapse" data-target="#navbar-footer">
+						<i class="icon-unfold mr-2"></i>
+						Footer
+					</button>
+				</div>
+
+				<div class="navbar-collapse collapse" id="navbar-footer">
+					<span class="navbar-text">
+						&copy; {{ "now"|date("Y") }}. 
+								<img src="{{ absolute_url(asset('backend/img/logo-xs.png')) }}" width="20" style="width:20px !important" >
+						<b>Quiz Mentor</b> 
+					</span>
+
+				</div>
+			</div>
+			<!-- /footer -->
+
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+{% endblock %}
+

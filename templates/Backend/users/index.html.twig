@@ -1,0 +1,124 @@
+{# templates/index.html.twig #}
+{% extends 'Backend/layout.html.twig' %}
+{% block title %}Liste des Utilisateurs{% endblock %}
+	{% block scriptsheets %}
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/datatables.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/selects/select2.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_basic.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/jszip/jszip.min.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/pdfmake/pdfmake.min.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/pdfmake/vfs_fonts.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/buttons.min.js')) }}"></script>
+
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/invoice_archive.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_extension_buttons_html5.js')) }}"></script>
+ <style type="text/css">
+    	.buttons-excel, .buttons-pdf, .buttons-copy{display: none}
+    </style>
+    {% endblock %}
+
+{% block content %}
+    <!-- Content area -->
+            <div class="content">
+
+
+				<!-- State saving -->
+				<div class="card">
+					<div class="card-header header-elements-inline card-header bg-teal">
+						<h5 class="card-title"><i class="icon-users4"></i> Liste des Utilisateurs</h5>
+                                    <div class="header-elements">
+                                        <div class="list-icons">
+                                           <a href="{{ path('backend_users_add') }}" class="btn alpha-blue text-blue-800 border-blue-600"><i class="icon-plus-circle2 mr-2"></i>Ajouter</a>
+                                        </div>
+                                    </div>
+					</div>
+					<p>
+					
+		 {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-styled-right alert-arrow-right alert-dismissible">
+									<button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+									<span class="font-weight-semibold">{{ message }}</span> 
+							    </div>{% endfor %}
+
+        {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger alert-styled-right alert-dismissible">
+									<button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+									<span class="font-weight-semibold">{{ message }}</span> 
+							    </div>{% endfor %}
+					</p>
+
+					<table class="table datatable-button-html5-columns">
+						<thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Nom</th>
+                                <th>Prenom</th>
+                                <th>Email</th>
+                                <th>Téléphone</th>  
+                                <th>Status</th>
+                                <th>Roles</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in liste %}
+                            {% if 'ROLE_ADMIN' in user.roles or  'ROLE_SUPER_ADMIN' in user.roles %} 
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td class="m-0 font-weight-semibold">{{ user.firstName }}***</td>
+                                <td class="m-0 font-weight-semibold">{{ user.lastName }}</td>
+                                <td class="m-0 font-weight-semibold">{{ user.email }}</td>
+                                <td class="m-0 font-weight-semibold">{{ user.phone }}</td>
+                                <td class="m-0 font-weight-semibold">{{ user.status }}</td>
+								<td class="m-0 font-weight-semibold">
+								 {% for role in user.roles %} 
+								<span class="badge bg-success align-self-center ml-auto"> {{ role }} </span>
+								{% endfor %}</td>
+								<td><a href="{{ path('backend_users_edit', {'id':user.id}) }}"
+                           class="btn btn-outline-info btn-sm"
+                           data-message="Etes-vous sûr de Supprimer ?"
+                           title="Cliquer pour archiver"><i class="icon-pencil7 mr-2"></i>Modifier</a>
+                             {% if  is_granted('ROLE_SUPER_ADMIN') %}
+                           <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal_theme_danger{{ user.id }}">Supprimer <i class="icon-play3 ml-2"></i></button>
+                           			{% endif %}
+								</td>
+							</tr>
+
+							  <!-- Danger modal -->
+				<div id="modal_theme_danger{{ user.id }}" class="modal fade" tabindex="-1">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header bg-danger">
+								<h6 class="modal-title">Suppression</h6>
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+							</div>
+
+							<div class="modal-body">
+								<h6 class="font-weight-semibold">Etes-vous sûr de Supprimer cet utilisateur ?</h6>
+								<p><b>{{ user.firstName }}</b> {{ user.lastName }} </p>
+							</div>
+
+							<div class="modal-footer">
+								<button type="button" class="btn btn-link" data-dismiss="modal">Annuler</button>
+								<a href="{{ path('backend_users_delete', {'id':user.id}) }}"
+                           class="btn bg-danger" data-message="Etes-vous sûr de Supprimer ?">Supprimer</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /default modal -->
+							{% endif %}
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+				<!-- /state saving -->
+            </div>
+            
+{% endblock %}
+

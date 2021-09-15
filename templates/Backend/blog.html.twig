@@ -1,0 +1,69 @@
+{# templates/liste.html.twig #}
+{% extends 'Backend/basefront.html.twig' %}
+{% block body %}
+    <div class="corps page-liste-produits">
+        <div class="container">
+            <div class="row">
+         {% if is_granted('ROLE_USER') %}
+                <div class="col-sm-3">
+                    <div class="filtre liste-categorie">
+                        <h4>Catégories :</h4>
+                        <div id="left" class="span3">
+                            <ul id="menu-group-1" class="nav">  
+                         {% for parent in parents %} 
+                                <li class="deeper parent">
+                                    <a class="" href="{{ path('backend_listecatalogue', {'alias':parent.alias}) }}">
+                                        <span class="lbl">{{ parent.name }}</span>
+                                        <span data-toggle="collapse" data-parent="#menu-group-1" href="#sub-item-{{ parent.id }}" class="sign"><i class="fas fa-chevron-down"></i></span>                      
+                                    </a>
+                                    <ul class="children nav-child unstyled small collapse" id="sub-item-{{ parent.id }}">
+	                       			 {% for son in parent.sons %}
+                                        <li class="deeper parent">
+                                            <a class="" href="{{ path('backend_listecatalogue', {'alias':son.alias}) }}">
+                                                <span data-toggle="collapse" data-parent="#menu-group-1" href="#sub-item-{{ son.id }}" class="sign"><i class="fas fa-chevron-down"></i></span>
+                                                <span class="lbl">{{ son.name }}</span> 
+                                            </a>
+
+                                            <ul class="children nav-child unstyled small collapse" id="sub-item-{{ son.id }}">
+		                                    	{% for sonson in son.sons %}
+                                                <li class="">
+                                                    <a class="" href="{{ path('backend_listecatalogue', {'alias':sonson.alias}) }}">
+                                                        <span class="lbl">{{ sonson.name }}</span>
+                                                    </a>
+                                                </li> 
+                                                {% endfor %}                               
+                                            </ul>
+                                        </li>
+                            		{% endfor %}   
+                                    </ul>
+                                </li>  	
+                             {% endfor %}   
+                            </ul>          
+                        </div>
+                    </div>
+                    <!-- /.liste-categorie -->
+                </div>{% endif %}   
+                <!-- /.col-sm-4 -->
+                <div class="col-sm-9">
+                    <div class="liste-produits">
+                        <h2 class="titre-page-produit">{{blog.title}}</h2>
+                        <div class="row" style="min-height: 400px;">
+                        {{blog.longDesc | raw }}
+                        {% if blog.photo is not null  %}
+                        <img src="{{asset('upload/blog/'~blog.photo)}}" style="width: 100%;">
+                        {% endif %}
+                        </div>
+                        <!-- /.row -->
+                        
+                    </div>
+                    <!-- /.liste-produits -->
+                </div>
+                <!-- /.col-sm-8 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /.page-liste-produits -->
+            
+{% endblock %}

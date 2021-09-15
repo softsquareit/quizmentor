@@ -1,0 +1,263 @@
+{# templates/index.html.twig #}
+{% extends 'Backend/layout.html.twig' %}
+{% block title %} Bienvenue {% endblock %}
+  {% block scriptsheets %}
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/datatables.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/selects/select2.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_basic.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/jszip/jszip.min.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/pdfmake/pdfmake.min.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/pdfmake/vfs_fonts.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/buttons.min.js')) }}"></script>
+
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/invoice_archive.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_extension_buttons_html5.js')) }}"></script>
+    <style type="text/css">
+      .buttons-pdf, .buttons-copy{display: none}
+    </style>
+  <!-- /theme JS files -->
+    {% endblock %}
+
+
+{% block content %}
+    <!-- Content area -->
+            <div class="content">
+
+         <!-- State saving -->
+        
+          <div class="card-header header-elements-inline card-header bg-pink">
+            <h5 class="card-title"  style="    margin: auto;">Résultat Quiz : {{ quiz.subject.name}}/
+            {% for chapter in quiz.chapters %}
+            {{ chapter.name }}{% endfor %} {% if prerequis is defined and prerequis %}<button class="btn alpha-warning text-warning">Prérequis</button>{% else %} <button class="btn alpha-info text-info">Objectif</button>{% endif %}
+
+</h5> 
+                                    <div class="header-elements">
+                                        <div class="list-icons">
+                                        </div>
+                                    </div>
+          </div>
+    {% if quizresult is not null %}  
+                  <!-- Left aligned buttons -->
+                   <div class="col-md-12 row">
+                        <div class=" col-md-1"></div>
+                        <div class=" col-md-9 card">
+
+                                <div class="card-header ">
+                                    <h2 class="card-title">
+                                      {% set message = '' %}
+                                     {% set icon = 'icon-reading' %}
+                                     {% set fooquiz = 'danger' %}
+                                {% if quizresult.note > 85 %}{% set fooquiz = 'success' %} {% set icon = 'icon-trophy3' %}
+ {% set message = 'BRAVO tu es prêt à cette nouvelle aventure maintenant' %}
+                                {% endif %}
+                                {% if quizresult.note < 86 %}{% set fooquiz = 'info' %} {% set icon = 'icon-medal-second' %}
+ {% set message = 'Avant de commencer une nouvelle aventure on remédier quelques lacunes' %}
+                                 {% endif %}
+                                {% if quizresult.note < 60 %}{% set fooquiz = 'warning' %} {% set icon = 'icon-reading' %} {% endif %}
+                                {% if quizresult.note < 40 %}{% set fooquiz = 'danger' %}  {% set icon = 'icon-notification2' %}{% endif %}
+                                {% if quizresult.note == 100 %}{% set fooquiz = 'teal' %} {% set icon = 'icon-trophy4' %}{% endif %}
+
+
+                                
+<div class="card text-center">
+                  <div class="card-body">
+
+                    <!-- Progress counter -->
+					
+<div class="col-lg-12 row">	
+<div class="col-lg-12">			
+				  <div class="svg-center position-relative">
+<i class="{{icon}} icon-2x text-{{fooquiz}} border-{{fooquiz}} border-3 rounded-round p-3 mb-3 mt-1"></i>
+                      <div>{{quiz.intitule}}</div></div>
+                    <!-- /progress counter -->
+                    <div class="progress mb-3">
+                <div class="progress-bar progress-bar-striped bg-{{fooquiz}}" style="width: {{quizresult.note}}%">
+                  <span class="sr-only">{{quizresult.note}}% Complete</span>
+                </div>
+              </div>
+			</div>
+			{% set totalsuccess = 0 %}
+			{% set totalfailed = 0 %}
+            {% set totalgaps = 0 %}
+			 {% for gapquiz in quizresult.gapQuizzes %} 
+                 {% set totalgaps = totalgaps +1 %}
+			 {% if gapquiz.failed < gapquiz.success %}
+		{% set totalsuccess = totalsuccess +1 %}
+		{% else %}
+		{% set totalfailed = totalfailed + 1 %}
+		{% endif  %}
+		
+			  {% endfor %}
+		
+    {% if totalgaps > 1 %}  	  
+<div class="col-lg-4">
+<div class="card card-body border-top-info text-center">
+<div class="text-center">
+<i class="icon-warning  icon-2x text-danger border-danger border-3 rounded-round p-3 mb-3 mt-1"></i>
+<h5 class="card-title">Compétence à developper <span class="badge bg-danger badge-pill">
+{{ totalfailed }}</span></h5>
+</div>
+</div>
+</div>
+
+<div class="col-lg-4">
+<div class="card card-body border-top-info text-center">
+<div class="text-center">
+<i class="icon-atom2 icon-2x text-success border-success border-3 rounded-round p-3 mb-3 mt-1"></i>
+<h5 class="card-title">Compétences acquises
+ <span class="badge bg-success badge-pill">
+{{ totalsuccess }}</span></h5>
+</div>
+</div>
+</div>
+
+{% else  %}
+<div class="col-lg-4" >
+</div>
+{% endif  %}
+<div class="col-lg-4">  
+
+                       <i class="icon-alarm  icon-2x text-{{fooquiz}} border-{{fooquiz}} border-3 rounded-round p-3 mb-3 mt-1">
+                       <br>{{ quizresult.duration // 60 }}:{{ quizresult.duration % 60 }} </i> 
+
+<i class="{{icon}}  icon-2x text-{{fooquiz}} border-{{fooquiz}} border-3 rounded-round p-3 mb-3 mt-1">
+                       <br> {% if prerequis is defined and prerequis %}   
+                       {{quizresult.note}}  % 
+                       {% else %}
+                       {{ (quizresult.note /5 ) }}/20
+                      {% endif %} </i> 
+
+                     
+                   
+                    
+
+</div> 
+         <h2 class="pt-1 mt-2 mb-1"><button type="button" style="font-size: initial;" class=" alpha-blue text-{{fooquiz}} border-{{fooquiz}} legitRipple"> {{ message }}  % </button></h2>
+
+</div>
+
+
+ <div class="card-body"> 
+        <div class="form-group col-md-12" style="background: #f9fbfc;">
+                    {% for quizanswerquestions in quizresult.quizanswerquestions %}  
+                           
+                      {% if quizanswerquestions.question.type != 'blanks' %}    
+          <div class="card" style="background: #f9fbfc;"> 
+
+                    <h3 class="card-title" >{{ quizanswerquestions.question.intitule | raw }}</h3>
+                                       
+                <div class="row">       
+                            {% for quizanswers in quizanswerquestions.quizanswers %}  
+                    <div class="row col-md-12" >
+                        <div class="col-md-8" >
+                             {% if quizanswerquestions.question.type =='text' %}
+             <label for="custom_radio_stacked_unchecked">{{ quizanswers.answer | raw }}</label>
+                 {% endif %}
+             {% if quizanswerquestions.question.type =='unique' and quizanswers.suggestion is not null %}
+                  <div class="custom-control custom-radio">
+                      <input type="radio" class="custom-control-input" {% if quizanswers.answer =='true' %}checked=""{% endif %}>
+                      <label class="custom-control-label" >{{ quizanswers.suggestion.name | raw }}</label>
+                  </div>
+
+                 {% endif %}
+             {% if quizanswerquestions.question.type =='multiple' and quizanswers.suggestion is not null %}
+                  <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input"  {% if quizanswers.answer =='true' %}checked=""{% endif %}  >
+                      <label class="custom-control-label" >{{ quizanswers.suggestion.name | raw }}</label>
+                  </div>
+
+                 {% endif %}
+
+
+                        </div>
+                        <div class="col-md-4" >
+                                      
+                
+                {% if quizanswers.suggestion is not null and quizanswers.result %}
+                        <span class="badge bg-success align-self-center ml-auto"> correct </span>{% elseif quizanswers.suggestion is not null and not quizanswers.result %} <span class="badge bg-danger align-self-center ml-auto"> faux </span><br>Réponse : 
+                        {% for suggestion in quizanswers.question.suggestions %}
+                        {% if suggestion.live==1 %} <b  style="color: green">{{ suggestion.name | raw }}</b> <br>{% endif %}
+                       {% endfor %}
+                        {% endif %}
+
+
+                 {% if quizanswerquestions.question.type =='text' %}
+
+                 {% if quizanswerquestions.question.answer == quizanswers.answer %}
+                        <span class="badge bg-success align-self-center ml-auto"> correct </span>{% else %} <span class="badge bg-danger align-self-center ml-auto"> faux </span> <br>Réponse :<br> <b style="color: green">{{quizanswerquestions.question.answer}} </b> {% endif %}
+
+
+                        
+                 {% endif %}
+
+
+
+                        </div>
+                    </div>
+
+                            {% endfor %} 
+                </div>  
+                  {% if quizanswerquestions.question.rule is not null %}
+                  <div class="alert alert-info alert-styled-left alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+                                    <span class="font-weight-semibold">{{ quizanswerquestions.question.rule | raw }}</div>
+                                
+
+                  
+                  {% endif %}</div>
+
+                    {% else %}
+
+          <div class="card" style="background: #f9fbfc;"> 
+
+                    <h3 class="card-title">{{ quizanswerquestions.question.intitule | raw }}</h3>
+             {% if quizanswerquestions.question.type == 'blanks' %}
+                                    <div >
+{{ render(controller('App\\Controller\\Backend\\DefaultController::questionblanksquizanswer', {'quizanswerquestions': quizanswerquestions.id } )) }}
+                                    </div>{% endif %}</div>
+ {% if quizanswerquestions.question.rule is not null %}
+                  <div class="alert alert-info alert-styled-left alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+                                    <span class="font-weight-semibold">{{ quizanswerquestions.question.rule | raw }}</div>
+                                
+
+                  
+                  {% endif %}
+                 {% endif %}
+                    {% endfor %}
+
+
+    <a class="btn bg-pink btn-labeled btn-labeled-left rounded-round" 
+    href="{{ path('backend_quizresultshow', {'quiz':quiz.id,'quizresult':quizresult.id}) }}" style="margin-top:10px" >
+    <i class="icon-bookmark"></i> Résultat Quiz</a>
+    
+                                     </div>
+
+                                </div>
+
+
+				
+                  </div>
+                </div>
+                                    </h2>
+                                    <p class="card-title">
+                                    {{ quiz.description}} </p>
+                                </div>
+
+
+                           </div>
+
+                        </div>
+
+        {% endif %}
+      
+        <!-- /state saving -->
+            </div>
+
+            
+{% endblock %}

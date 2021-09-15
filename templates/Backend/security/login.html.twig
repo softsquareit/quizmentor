@@ -1,0 +1,92 @@
+{% extends 'Backend/base.html.twig' %}
+{% block body %}
+    <!-- Page content -->
+    <div class="page-content" style="background-image: url('school/images/login.jpg');
+    background-size: cover;">
+
+        <!-- Main content -->
+        <div class="content-wrapper">
+
+            <!-- Content area -->
+            <div class="content d-flex justify-content-center align-items-center">
+
+                <!-- Login form -->
+               <form class="login-form"  method="post">
+    {% if error %}
+        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+<p>
+                        
+         {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-styled-right alert-arrow-right alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+                                    <span class="font-weight-semibold">{{ message }}</span> 
+                                </div>{% endfor %}
+
+        {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger alert-styled-right alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+                                    <span class="font-weight-semibold">{{ message }}</span> 
+                                </div>{% endfor %}
+                    </p>
+                    <div class="card mb-0">
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <a href="{{ path('front') }}"><img src="{{asset('school/images/logo-dark.png')}}" alt="Canvas Logo" style="height: 200px;"></a>
+                                <h5 class="mb-0">Se connecter</h5>
+                                <span class="d-block text-muted">Entrez vos informations d'identification</span>
+                            </div>
+
+                            <div class="form-group form-group-feedback form-group-feedback-left">
+                                <input  type="text" value="{{ last_username }}" name="email"  class="form-control" placeholder="Téléphone">
+                                <div class="form-control-feedback">
+                                    <i class="icon-user text-muted"></i>
+                                </div>
+                            </div>
+
+                            <div class="form-group form-group-feedback form-group-feedback-left">
+                                <input type="password" name="password" id="inputPassword"  class="form-control" placeholder="Mot de passe">
+                                <div class="form-control-feedback">
+                                    <i class="icon-lock2 text-muted"></i>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" style="background: #a3365b;" class="btn bg-teal-400 btn-labeled btn-labeled-left rounded-round btn-block"><b><i class="icon-unlocked mr-2"></i></b>  S'identifier</button>
+                                <a href="{{ path('backend_inscription') }}"  style="background: #0a4a82;" class="btn bg-teal-400 btn-labeled btn-labeled-left rounded-round btn-block"><b><i class="icon-plus3 mr-2"></i></b>  Inscription</a>
+                            </div>
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                        </div>
+                    </div> 
+                </form>
+                <!-- /login form -->
+
+            </div>
+            <!-- /content area -->
+
+
+            <!-- Footer -->
+            <div class="navbar navbar-expand-lg navbar-light">
+                <div class="text-center d-lg-none w-100">
+                    <button type="button" class="navbar-toggler dropdown-toggle" data-toggle="collapse" data-target="#navbar-footer">
+                        <i class="icon-unfold mr-2"></i>
+                        Footer
+                    </button>
+                </div>
+
+                <div class="navbar-collapse collapse" id="navbar-footer">
+                    <span class="navbar-text">
+                        &copy; {{ "now" | date('Y') }} 
+                    </span>
+
+                </div>
+            </div>
+            <!-- /footer -->
+
+        </div>
+        <!-- /main content -->
+
+    </div>
+    <!-- /page content -->
+
+{% endblock %}

@@ -1,0 +1,623 @@
+{# templates/index.html.twig #}
+{% extends 'Backend/layout.html.twig' %}
+{% block title %} Bienvenue {% endblock %}
+    {% block scriptsheets %}
+   <!-- Theme JS files -->
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/visualization/echarts/echarts.min.js')) }}"></script>
+
+
+    <script >
+        /* ------------------------------------------------------------------------------
+ *
+ *  # Echarts - Pie and Donut charts
+ *
+ *  Demo JS code for echarts_pies_donuts.html page
+ *
+ * ---------------------------------------------------------------------------- */
+
+
+// Setup module
+// ------------------------------
+
+var EchartsPiesDonuts = function() {
+
+
+    //
+    // Setup module components
+    //
+
+    // Pie and donut charts
+    var _piesDonutsExamples = function() {
+        if (typeof echarts == 'undefined') {
+            console.warn('Warning - echarts.min.js is not loaded.');
+            return;
+        }
+
+        // Define elements
+        var pie_basic_element = document.getElementById('pie_basic');
+        var pie_donut_element = document.getElementById('pie_donut');
+        var pie_nested_element = document.getElementById('pie_nested');
+        var pie_infographic_element = document.getElementById('pie_infographic');
+        var pie_rose_element = document.getElementById('pie_rose');
+        var pie_rose_labels_element = document.getElementById('pie_rose_labels');
+        var pie_levels_element = document.getElementById('pie_levels');
+        var pie_timeline_element = document.getElementById('pie_timeline');
+        var pie_multiples_element = document.getElementById('pie_multiples');
+
+{% if gapstudent is defined and gapstudent is not null and gapstudent.total>0 %}
+ 
+    {% set pourcentage = (gapstudent.success/gapstudent.total)*100 %}
+
+    {% set pourcentagefailed = 100-pourcentage %}
+    {% if pourcentage >= 80 %}{% set foo = 'Compétences acquises ' %} {% else %}{% set foo = 'Compétence à developper' %}  {% endif %}
+
+        //
+        // Charts configuration
+        //
+
+        // Basic pie chart
+        if (pie_basic_element) {
+
+            // Initialize chart
+            var pie_basic = echarts.init(pie_basic_element);
+
+
+            //
+            // Chart config
+            //
+
+            // Options
+            pie_basic.setOption({
+
+                // Colors
+                color: [
+                    '#2ec7c9','#d87a80'
+                ],
+
+                // Global text styles
+                textStyle: {
+                    fontFamily: 'Roboto, Arial, Verdana, sans-serif',
+                    fontSize: 13
+                },
+
+                // Add title
+                title: {
+                    text: 'Questions réussie',
+                    subtext: '{{foo}}',
+                    left: 'center',
+                    textStyle: {
+                        fontSize: 17,
+                        fontWeight: 500
+                    },
+                    subtextStyle: {
+                        fontSize: 12
+                    }
+                },
+
+                // Add tooltip
+                tooltip: {
+                    trigger: 'item',
+                    backgroundColor: 'rgba(0,0,0,0.75)',
+                    padding: [10, 15],
+                    textStyle: {
+                        fontSize: 13,
+                        fontFamily: 'Roboto, sans-serif'
+                    },
+                    formatter: "{a} <br/>{b}: {c} ({d}%)"
+                },
+
+                // Add legend
+                legend: {
+                    orient: 'vertical',
+                    top: 'center',
+                    left: 0,
+                    data: ['IE', 'Opera'],
+                    itemHeight: 8,
+                    itemWidth: 8
+                },
+
+                // Add series
+                series: [{
+                    name: 'Questions',
+                    type: 'pie',
+                    radius: '70%',
+                    center: ['50%', '57.5%'],
+                    itemStyle: {
+                        normal: {
+                            borderWidth: 1,
+                            borderColor: '#fff'
+                        }
+                    },
+                    data: [
+                        {value: {{gapstudent.success}}, name: 'Réussie'},
+                        {value: {{gapstudent.failed}}, name: 'Echoué'}
+                    ]
+                }]
+            });
+        }
+
+      
+        // Infographic style
+        if (pie_infographic_element) {
+
+            // Initialize chart
+            var pie_infographic = echarts.init(pie_infographic_element);
+
+
+            //
+            // Chart config
+            //
+
+            // Common styles
+            var dataStyle = {
+                normal: {
+                    borderWidth: 1,
+                    borderColor: '#fff',
+                    label: {show: false},
+                    labelLine: {show: false}
+                }
+            };
+            var placeHolderStyle = {
+                normal: {
+                    color: 'transparent',
+                    borderWidth: 0
+                }
+            };
+
+            // Options
+            pie_infographic.setOption({
+
+                // Colors
+                color: [
+                    '#2ec7c9','#d87a80'
+                ],
+
+                // Global text styles
+                textStyle: {
+                    fontFamily: 'Roboto, Arial, Verdana, sans-serif',
+                    fontSize: 13
+                },
+
+                // Add title
+                title: {
+                    text: '{{foo}}',
+                    subtext: 'Compétence',
+                    left: 'center',
+                    top: '45%',
+                    textStyle: {
+                        color: 'rgba(30,144,255,0.8)',
+                        fontSize: 19,
+                        fontWeight: 500
+                    },
+                    subtextStyle: {
+                        fontSize: 12
+                    }
+                },
+
+                // Add tooltip
+                tooltip: {
+                    trigger: 'item',
+                    backgroundColor: 'rgba(0,0,0,0.75)',
+                    padding: [10, 15],
+                    textStyle: {
+                        fontSize: 13,
+                        fontFamily: 'Roboto, sans-serif'
+                    },
+                    formatter: function (params) {
+                        if(params.color == "transparent")return;
+                        return params.percent + '%' + ' - ' + params.seriesName;
+                    }
+                },
+
+                // Add legend
+                legend: {
+                    orient: 'vertical',
+                    top: '5%',
+                    left: (pie_infographic_element.offsetWidth / 2) + 20,
+                    data: ['60% Definitely yes','30% Could be better','10% Not at the moment'],
+                    itemHeight: 8,
+                    itemWidth: 8,
+                    itemGap: 15
+                },
+
+                // Add series
+                series: [
+                    {
+                        name: 'Maitrisé',
+                        type: 'pie',
+                        cursor: 'default',
+                        clockWise: false,
+                        radius: ['75%', '90%'],
+                        hoverOffset: 1,
+                        itemStyle: dataStyle,
+                        data: [
+                            {
+                                value: {{gapstudent.success }},
+                                name: 'maitrisé'
+                            },
+                            {
+                                value: {{gapstudent.total -gapstudent.success }},
+                                name: 'invisible',
+                                silent: false,
+                                itemStyle: placeHolderStyle
+                            }
+                        ]
+                    },
+
+                    {
+                        name: 'Non maitrisé',
+                        type:'pie',
+                        cursor: 'default',
+                        clockWise: false,
+                        radius: ['60%', '75%'],
+                        hoverOffset: 0,
+                        itemStyle: dataStyle,
+                        data: [
+                            {
+                                value: {{gapstudent.total -gapstudent.success }}, 
+                                name: 'non maitrisé'
+                            },
+                            {
+                                value: {{gapstudent.success }},
+                                name: 'invisible',
+                                silent: true,
+                                itemStyle: placeHolderStyle
+                            }
+                        ]
+                    },
+
+                ]
+            });
+        }
+        {% else %}
+        {% set gapstudentsuccess =0 %}
+        {% set gapstudentfailed =0 %}
+        {% set gapstudentpourcentage =0 %}
+         {% for gapstudentliste in lacuneliste %} 
+  {% if gapstudentliste.gap.subject.id == subject.id %}   
+    {% set pourcentage = (gapstudentliste.success/gapstudentliste.total)*100 %}
+
+{% set gapstudentsuccess = gapstudentsuccess+ gapstudentliste.success %}
+{% set gapstudentfailed = gapstudentfailed+ gapstudentliste.failed %}
+
+ {% endif %}
+  {% endfor %}
+  {% if gapstudentfailed+gapstudentsuccess > 0 %}   
+   {% set gapstudentpourcentage = (gapstudentsuccess/(gapstudentfailed+gapstudentsuccess))*100 %}
+    {% endif %}
+{% if gapstudentpourcentage > 80 %}{% set foo = 'Compétences  acquises ' %} {% else %}{% set foo = 'Compétence  à developper' %}  {% endif %}
+          // Infographic style
+        if (pie_infographic_element) {
+
+            // Initialize chart
+            var pie_infographic = echarts.init(pie_infographic_element);
+
+
+            //
+            // Chart config
+            //
+
+            // Common styles
+            var dataStyle = {
+                normal: {
+                    borderWidth: 1,
+                    borderColor: '#fff',
+                    label: {show: false},
+                    labelLine: {show: false}
+                }
+            };
+            var placeHolderStyle = {
+                normal: {
+                    color: 'transparent',
+                    borderWidth: 0
+                }
+            };
+
+            // Options
+            pie_infographic.setOption({
+
+                // Colors
+                color: [
+                    '#2ec7c9','#d87a80'
+                ],
+
+                // Global text styles
+                textStyle: {
+                    fontFamily: 'Roboto, Arial, Verdana, sans-serif',
+                    fontSize: 13
+                },
+
+                // Add title
+                title: {
+                    text: '{{foo}}',
+                    subtext: 'Compétence',
+                    left: 'center',
+                    top: '45%',
+                    textStyle: {
+                        color: 'rgba(30,144,255,0.8)',
+                        fontSize: 19,
+                        fontWeight: 500
+                    },
+                    subtextStyle: {
+                        fontSize: 12
+                    }
+                },
+
+                // Add tooltip
+                tooltip: {
+                    trigger: 'item',
+                    backgroundColor: 'rgba(0,0,0,0.75)',
+                    padding: [10, 15],
+                    textStyle: {
+                        fontSize: 13,
+                        fontFamily: 'Roboto, sans-serif'
+                    },
+                    formatter: function (params) {
+                        if(params.color == "transparent")return;
+                        return params.percent + '%' + ' - ' + params.seriesName;
+                    }
+                },
+
+                // Add legend
+                legend: {
+                    orient: 'vertical',
+                    top: '5%',
+                    left: (pie_infographic_element.offsetWidth / 2) + 20,
+                    data: ['60% Definitely yes','30% Could be better','10% Not at the moment'],
+                    itemHeight: 8,
+                    itemWidth: 8,
+                    itemGap: 15
+                },
+
+                // Add series
+                series: [
+                    {
+                        name: 'Maitrisé',
+                        type: 'pie',
+                        cursor: 'default',
+                        clockWise: false,
+                        radius: ['75%', '90%'],
+                        hoverOffset: 1,
+                        itemStyle: dataStyle,
+                        data: [
+                            {
+                                value: {{gapstudentsuccess }},
+                                name: 'maitrisé'
+                            },
+                            {
+                                value: {{gapstudentfailed }},
+                                name: 'invisible',
+                                silent: false,
+                                itemStyle: placeHolderStyle
+                            }
+                        ]
+                    },
+
+                    {
+                        name: 'Non maitrisé',
+                        type:'pie',
+                        cursor: 'default',
+                        clockWise: false,
+                        radius: ['60%', '75%'],
+                        hoverOffset: 0,
+                        itemStyle: dataStyle,
+                        data: [
+                            {
+                                value: {{gapstudentfailed }}, 
+                                name: 'non maitrisé'
+                            },
+                            {
+                                value: {{gapstudentsuccess }},
+                                name: 'invisible',
+                                silent: true,
+                                itemStyle: placeHolderStyle
+                            }
+                        ]
+                    },
+
+                ]
+            });
+        }
+          {% endif %}
+      
+
+
+        //
+        // Resize charts
+        //
+
+        // Resize function
+        var triggerChartResize = function() {
+            pie_basic_element && pie_basic.resize();
+            pie_donut_element && pie_donut.resize();
+            pie_nested_element && pie_nested.resize();
+            pie_infographic_element && pie_infographic.resize();
+            pie_rose_element && pie_rose.resize();
+            pie_rose_labels_element && pie_rose_labels.resize();
+            pie_levels_element && pie_levels.resize();
+            pie_timeline_element && pie_timeline.resize();
+            pie_multiples_element && pie_multiples.resize();
+        };
+
+        // On sidebar width change
+        $(document).on('click', '.sidebar-control', function() {
+            setTimeout(function () {
+                triggerChartResize();
+            }, 0);
+        });
+
+        // On window resize
+        var resizeCharts;
+        window.onresize = function () {
+            clearTimeout(resizeCharts);
+            resizeCharts = setTimeout(function () {
+                triggerChartResize();
+            }, 200);
+        };
+    };
+
+
+    //
+    // Return objects assigned to module
+    //
+
+    return {
+        init: function() {
+            _piesDonutsExamples();
+        }
+    }
+}();
+
+
+// Initialize module
+// ------------------------------
+
+document.addEventListener('DOMContentLoaded', function() {
+    EchartsPiesDonuts.init();
+});
+
+    </script>
+
+
+    <!-- /theme JS files -->
+
+    {% endblock %}
+
+
+{% block content %}
+    <!-- Content area -->
+            <div class="content">
+
+                 {{ render(controller(
+        'App\\Controller\\Backend\\DefaultController::classroomformer')) }}
+                <!-- State saving -->
+    {% if is_granted('ROLE_STUDENT') or is_granted('ROLE_FAMILY')  or is_granted('ROLE_FORMER')%} 
+       
+
+<div >
+                    <div class="card-header header-elements-inline card-header bg-teal">
+                        <h5 class="card-title"><i class="icon-stats-dots "></i> Mes progrés {{ subject.name }}</h5>
+                                    <div class="header-elements">
+                                    </div>
+                    </div>
+		<div class="col-lg-12 row ">			
+<div class="col-lg-4">   
+    <div class="col-lg-12">
+                        <div class="card card-body border-top-info text-center bg-light">
+                              {% for badgeStudent in app.user.badgeStudents %}
+                            {% if badgeStudent.subject.id == subject.id and badgeStudent.badge is  not null %}
+                                 <a href="#" class="nav-link btn btn-block btn-float m-0 legitRipple "><img src="{{ absolute_url(asset('upload/badge/'~ badgeStudent.badge.icon )) }}" width="40" style="width:40px !important" >
+                                 <div>Badge  {{ subject.name }}<div class="opacity-50">{{ badgeStudent.badge.intitule }} </div></div></a>   
+                            {% endif %}
+                        {% endfor  %}
+                            <a href="{{ path('backend_progress_subject', {'subject':subject.id}) }}" class="text-center">
+                                <img src="{{ absolute_url(asset('backend/img/'~subject.name~'.png')) }}" class="border-slate-300 border-3 rounded-round" data-pagespeed-url-hash="758139638" onload="pagespeed.CriticalImages.checkImageForCriticality(this);" style="width: 100px;background: #eeeeee;">
+                                <img src="" width="20" style="width:20px !important" alt="">
+                                <h5 class="card-title"><b>{{ subject.name }}</b></h5>
+ 
+
+                      
+                
+                               
+                            </a>
+                       
+
+
+        <ul class="nav nav-sidebar" data-nav-type="accordion">
+ {% for chapter in chapters %}
+             <li class="nav-item nav-item-submenu {% if gapstudent  is defined and gapstudent is not null and  gapstudent.gap.chapter.id == chapter.id %} nav-item-open {% endif %}" >
+                            <a href="#" class="nav-link" >
+                                <i class="icon-atom2 mr-3 text-warning icon-2x"></i>
+                                    <div>{{chapter.name}} </div>
+                            </a> 
+                            <ul class="nav nav-group-sub active" {% if gapstudent  is defined and gapstudent is not null and  gapstudent.gap.chapter.id == chapter.id %} style="display: block;" {% endif %} data-submenu-title="Layouts">
+                           {% for gapstudentliste in lacuneliste %} {% if gapstudentliste.gap.chapter.id == chapter.id %}         
+                                <li class="nav-item"><a href="{{ path('backend_progressgaps_subject', {'gapstudent':gapstudentliste.id,'subject':subject.id}) }}" class="nav-link" style="
+    border: 1px solid #bfcecc;
+    {% if gapstudent  is defined and gapstudent is not null and gapstudentliste.id==gapstudent.id %}background: #a31a5c;
+    color: white;{% endif %}
+    border-radius: 10px;
+    margin-top: 5px;text-align: center;
+    padding: 10px;font-size: 1.2em;"><i class="icon-atom2"></i>{{gapstudentliste.gap.name}}</a></li>
+                               
+    {% set pourcentage = (gapstudentliste.success/gapstudentliste.total)*100 %}
+
+    {% set foo = 'danger' %}  {% set icon = 'notification2' %}
+{% if pourcentage >= 80 %}{% set foo = 'success' %} {% set icon = 'atom2' %}  {% endif %}
+
+{% if pourcentage == 100 %}{% set foo = 'teal' %}  {% set icon = 'trophy4' %} {% endif %}
+
+ 
+   {% endif %}
+   {% endfor %}
+                            </ul>
+                        </li> 
+    {% endfor %} 
+                        </ul>
+
+
+    </div>
+                    </div>
+</div> 
+{% if gapstudent is defined and gapstudent is not null %}
+    <div class="col-xl-4">
+
+                        <!-- Infographic style -->
+                        <div class="card">
+                            <div class="card-header header-elements-inline">
+                                <h5 class="card-title">Compétence maitrisé {{ gapstudent.gap.name }} </h5>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <div class="chart has-fixed-height" id="pie_infographic"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /infographic style -->
+                    </div>
+
+    <div class="col-xl-4">
+        <div class="card">
+            <div class="card-header header-elements-inline">
+                <h5 class="card-title">Questions réussies {{ gapstudent.gap.name }}</h5>
+            </div>
+
+            <div class="card-body">
+                <div class="chart-container">
+                    <div class="chart has-fixed-height" id="pie_basic"></div>
+                </div>
+            </div>
+        </div>
+        <!-- /basic pie -->
+
+    </div>
+    {% else %}
+       <div class="col-xl-8">
+
+                        <!-- Infographic style -->
+                        <div class="card">
+                            <div class="card-header header-elements-inline">
+                                <h5 class="card-title">Compétence {{ subject.name }}  </h5>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <div class="chart has-fixed-height" id="pie_infographic"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /infographic style -->
+                    </div>
+      {% endif %}
+    
+</div>
+</div>
+    {% endif %}
+                        
+                <!-- /state saving -->
+            </div>
+
+
+{% endblock %}

@@ -1,0 +1,361 @@
+{# templates/index.html.twig #}
+{# templates/index.html.twig #}
+{% extends 'Backend/layout.html.twig' %}
+    {% block scriptsheets %}
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/datatables.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/selects/select2.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_basic.js')) }}"></script>
+
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/styling/switchery.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/styling/uniform.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/selects/select2.min.js')) }}"></script> 
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/uploaders/fileinput/plugins/purify.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/uploaders/fileinput/plugins/sortable.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/uploaders/fileinput/fileinput.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/form_actions.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/uploader_bootstrap.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/form_select2.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_extension_buttons_html5.js')) }}"></script>
+    {% endblock %}
+
+
+{% block content %}
+    <!-- Content area -->
+            <div class="content">
+
+                <!-- Form validation -->
+
+                <!-- State saving -->
+                <div class="card">
+
+                        <!-- Grey background -->
+                                <div class="card-header header-elements-inline card-header bg-teal">
+                                    <h5 class="card-title"><i class="icon-pencil7"></i> Quiz {% for chapter in ligne.chapters %} 
+<a href="{{ path('backend_chapter_editsubject', {'subject':ligne.subject.id,'id':chapter.id}) }}" class="btn alpha-blue text-blue-800 border-blue-600"><i class="icon-list mr-2"></i> Chapitre : {{ chapter.name }}  </a>
+                                    {% endfor %} </h5>
+                                    <div class="header-elements">
+                                        <div class="list-icons">
+                                           <a href="{{ path('backend_quiz_liste') }}" class="btn alpha-blue text-blue-800 border-blue-600"><i class="icon-list mr-2"></i>La liste des quiz</a>
+                                            <button type="button" class="btn alpha-blue text-blue-800 border-blue-600" data-toggle="modal" data-target="#modal_add_partie"> Ajouter une Partie</button>
+                                        </div>
+                                    </div>
+                                </div>
+                    
+         {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-styled-right alert-arrow-right alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+                                    <span class="font-weight-semibold">{{ message }}</span> 
+                                </div>{% endfor %}
+
+        {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger alert-styled-right alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+                                    <span class="font-weight-semibold">{{ message }}</span> 
+                                </div>{% endfor %}
+                         {{ form_start(form, {'attr': {'novalidate': 'novalidate','class': 'col-lg-12'  }}) }}
+                                <div class="card-body row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>intitule:</label>
+                                            {{ form_widget(form.intitule, {'attr': {'required' :'required','class': 'form-control col-lg-4 ','placeholder':'intitule'}}) }}
+                                            {{ form_errors(form.intitule) }}
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Designation:</label>
+                                            {{ form_widget(form.description, {'attr': {'required' :'required','class': 'form-control col-lg-8 summernote','placeholder':'Designation'}}) }}
+                                            {{ form_errors(form.description) }}
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Classe:</label>
+                                            {{ form_widget(form.classrooms, {'attr': {'required' :'required','class': ' select-search  col-lg-4 ','placeholder':'classrooms'}}) }}
+                                            {{ form_errors(form.classrooms) }}
+                                        </div>
+
+                                        <div class="form-group row chapitre">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Chapitres:</label>
+                                            {{ form_widget(form.chapters, {'attr': {'multiple' :'false','required' :'required','class': 'form-control select-search col-lg-4 ','placeholder':'Chapitre','multiple' :'false'}}) }}
+                                            {{ form_errors(form.chapters) }}
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Langue:</label>
+                                            {{ form_widget(form.langue, {'attr': {'required' :'required','class': ' select-search form-control col-lg-4 ','placeholder':'langue'}}) }}
+                                            {{ form_errors(form.langue) }}
+                                        </div> 
+
+                                         <div class="card-footer d-flex justify-content-between align-items-center">
+                                    <a href="{{ path('backend_quiz_liste') }}"  class="btn btn-light">Cancel <i class="icon-cross2 ml-2"></i></a>
+                                    <button type="submit" class="btn bg-success">Valider <i class="icon-checkmark ml-2"></i></button>
+                                </div>
+                                    </div>
+                                </div>
+
+                               
+                        {{ form_end(form) }}
+
+
+
+            {% if ligne is defined %}
+
+              
+
+                            {% set countpart = 0 %}
+                            {% for part in ligne.parts|sort((a, b) => a.rang <=> b.rang) %}
+                                         {% set countpart = countpart + 1 %}
+                                <div class="card-header header-elements-inline card-header bg-primary">
+                                    <h5 class="card-title"><i class="icon-pencil7"></i> 
+                                        {% if countpart >1 %}  <a href="{{ path('backend_quiz_part_uporder', {'quiz':ligne.id,'part':part.id}) }}" class="btn bg-teal"><i class="icon-arrow-up7"></i></a> {% endif %}
+                                        {% if countpart < ligne.parts|length  %} <a href="{{ path('backend_quiz_part_downorder', {'quiz':ligne.id,'part':part.id}) }}" class="btn bg-teal"><i class="icon-arrow-down7"></i></a>  {% endif %}
+                                    Partie  {{ countpart }} : {{ part.intitule}} </h5>
+                                    <div class="header-elements">
+                                        <div class="list-icons">
+                                           <button type="button" class="btn alpha-blue text-blue-800 border-blue-600" data-toggle="modal" data-target="#modal_theme_questions{{part.id}}"><i class="icon-list mr-2"></i> Les des questions</button>
+                                           
+                                            <button type="button" class="btn alpha-blue text-blue-800 buttonquestion border-blue-600" data-quiz="{{ ligne.id }}"  data-part="{{ part.id }}" data-toggle="modal" data-target="#modal_add_question{{ part.id }}"> Ajouter une question</button>
+                                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal_theme_danger_part{{ part.id }}"> <i class="icon-trash"></i>Supprimer la Partie</button>
+                                        </div>
+                                    </div>
+                                </div>
+                    
+                    <table class="table datatable-button-html5-columns">
+                        <thead>
+                            <tr>
+                                <th class="">Ordre</th>
+                                <th >Intitule</th>
+                                <th >Objectif</th>
+                                <th >Chapitres</th>
+                                <th >Type</th>
+                                <th >Action</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set countquestion = 0 %}
+                            {% for partQuestion in part.partQuestions|sort((a, b) => a.rang <=> b.rang) %}
+                            {% set countquestion = countquestion + 1 %}
+                            {% set question = partQuestion.question %}
+                            <tr>
+                                <td>{% if countquestion >1 %}  <a href="{{ path('backend_question_part_uporder', {'partquestion':partQuestion.id,'part':part.id}) }}" class="btn alpha-blue text-blue-800 border-blue-600 legitRipple"><i class="icon-arrow-up7"></i>{{ countquestion }}</a> {% endif %}
+                                        {% if countquestion < part.partQuestions|length  %} <a href="{{ path('backend_question_part_downorder', {'partquestion':partQuestion.id,'part':part.id}) }}" class="btn alpha-blue text-blue-800 border-blue-600 legitRipple"><i class="icon-arrow-down7"></i></a>  {% endif %}</td>
+                                <td>{{ question.intitule | raw }}</td>
+                                </td>
+                                 <td>{% for gap in question.gaps %} <span class="btn btn-outline-info btn-sm legitRipple"> {{ gap.name }} </span> {% endfor %}</td>
+                                <td>{% for chapter in question.chapters %} <span class="btn btn-outline-info btn-sm legitRipple"> {{ chapter.name }} </span> {% endfor %}</td>
+                                <td> {% if question.type == "unique" %}
+                                          <a href="#" class="btn btn-primary btn-lg"><i class="icon-clipboard2 icon-2x"></i> <span>Choix unique</span></a>
+                                            {% endif %}
+                                            {% if question.type == "multiple" %}
+                                          <a href="#" class="btn bg-purple-400 btn-lg"><i class="icon-list icon-2x"></i> <span>Choix multiple</span></a>
+                                            {% endif %}
+                                            {% if question.type == "text" %}
+                                          <a href="#" class="btn bg-teal-400 btn-lg"><i class="icon-pencil7 icon-2x"></i> <span>Réponse text</span></a>
+                                            {% endif %}
+                                            {% if question.type == "blanks" %}
+                                          <a href="#" class="btn btn-danger btn-lg"><i class="icon-insert-template icon-2x"></i> <span>Filling the blanks</span></a>
+                                            {% endif %}</td>
+                                <td ><a href="{{ path('backend_question_editquiz', {'id':question.id,'quiz':ligne.id}) }}"
+                           class="btn btn-outline-info btn-sm"
+                           data-message="Etes-vous sûr de Supprimer ?"
+                           title="Cliquer pour archiver"><i class="icon-pencil7 mr-2"></i></a>
+                           <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal_theme_danger{{ question.id }}"> <i class="icon-trash"></i></button>
+                                </td>
+                            </tr>
+
+                <!-- Danger modal -->
+                <div id="modal_theme_danger{{ question.id }}" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger">
+                                <h6 class="modal-title">Suppression</h6>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <div class="modal-body">
+                                <h6 class="font-weight-semibold">Etes-vous sûr de Supprimer cette question  ?</h6>
+                            </div>{{question.intitule | raw }}
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-link" data-dismiss="modal">Annuler</button>
+                                <a href="{{ path('backend_quiz_remove', {'PartQuestion':partQuestion.id,'question':question.id}) }}"
+                           class="btn bg-danger" data-message="Etes-vous sûr de Supprimer ?">Supprimer</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /default modal -->
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                     <!-- Danger modal -->
+                <div id="modal_theme_danger_part{{ part.id }}" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger">
+                                <h6 class="modal-title">Suppression</h6>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <div class="modal-body">
+                                <h6 class="font-weight-semibold">Etes-vous sûr de Supprimer cette partie  "{{ part.intitule }}" ?</h6>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-link" data-dismiss="modal">Annuler</button>
+                                <a href="{{ path('backend_quiz_part_remove', {'quiz':ligne.id,'part':part.id}) }}"
+                           class="btn bg-danger" data-message="Etes-vous sûr de Supprimer ?">Supprimer</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /default modal -->
+
+
+
+         <!-- Danger modal -->
+                <div id="modal_theme_questions{{part.id}}" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog  modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary">
+                                <h6 class="modal-title">Liste des questions</h6>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <div class="modal-body">
+                                        <table class="table datatable-button-html5-columns">
+                        <thead>
+                            <tr>
+                                <th class="">Id</th>
+                                <th >Intitule</th>
+                                <th >Matière</th>
+                                <th >Objectif</th>
+                                <th >Chapitres</th>
+                                <th >Affecter</th>
+                                <th></th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for question in questions %}
+                            <tr>
+                                <td> {{ question.id }}</td>
+                                <td class="m-0 font-weight-semibold ">{{ question.intitule | raw }}</td>
+                                </td>
+                                <td>{% if question.subject is not null %}{{ question.subject.name }}{% endif %}</td>
+                                 <td>{% for gap in question.gaps %} <span class="btn btn-outline-info btn-sm legitRipple"> {{ gap.name }} </span> {% endfor %}</td>
+                                <td>{% for chapter in question.chapters %} <span class="btn btn-outline-info btn-sm legitRipple"> {{ chapter.name }} </span> {% endfor %}</td>
+                                <td ><a href="{{ path('backend_quiz_affect', {'quiz':ligne.id,'part':part.id,'question':question.id}) }}"
+                           class="btn alpha-pink text-pink-800 btn-icon rounded-round ml-2 confirm"
+                           data-message="Etes-vous sûr d'affecter cette question ?"
+                           title="Cliquer pour affecter"><i class="icon-link"></i></a></td>
+                                <td class="text-center">
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-link" data-dismiss="modal">Annuler</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /default modal -->
+
+
+
+                     <!-- Danger modal -->
+                <div id="modal_add_question{{part.id}}" class="modal fade " tabindex="-1">
+                    <div class="modal-dialog  modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header  bg-teal">
+                                <h6 class="modal-title">Ajouter une question</h6>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                    <div class="col-lg-12 row text-center">
+                                        <div class="col-lg-3 text-center">
+                                          <a href="{{ path('backend_question_addquestiontype', {'type':'unique','quiz':ligne.id,'part':part.id}) }}" class="btn btn-primary btn-float"><i class="icon-clipboard2 icon-2x"></i> <span>Choix unique</span></a>
+                                        </div>
+                                        <div class="col-lg-3 text-center">
+                                          <a href="{{ path('backend_question_addquestiontype', {'type':'multiple','quiz':ligne.id,'part':part.id}) }}" class="btn bg-purple-400 btn-float"><i class="icon-list icon-2x"></i> <span>Choix multiple</span></a>
+                                        </div>
+                                        <div class="col-lg-3 text-center">
+                                          <a href="{{ path('backend_question_addquestiontype', {'type':'text','quiz':ligne.id,'part':part.id}) }}" class="btn bg-teal-400 btn-float"><i class="icon-pencil7 icon-2x"></i> <span>Réponse text</span></a>
+                                        </div>
+                                        <div class="col-lg-3 text-center">
+                                          <a href="{{ path('backend_question_addquestiontype', {'type':'blanks','quiz':ligne.id,'part':part.id}) }}" class="btn btn-danger btn-float"><i class="icon-insert-template icon-2x"></i> <span>Filling the blanks</span></a>
+                                        </div>
+                                     </div>
+                            </div>
+
+                            <div class="modal-footer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /default modal -->
+
+                            {% endfor %}
+ 
+
+
+            {% endif %}
+                </div>
+                <!-- /state saving -->
+            </div>
+            
+
+            
+
+                     <!-- Danger modal -->
+                <div id="modal_add_partie" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog  modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header bg-info">
+                                <h6 class="modal-title">Ajouter une Partie</h6>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                         {{ form_start(formPart, {'attr': {'novalidate': 'novalidate','class': 'col-lg-12'  }}) }}
+                            <div class="modal-body">
+                                
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>intitule:</label>
+                                            {{ form_widget(formPart.intitule, {'attr': {'required' :'required','class': 'form-control col-lg-4 ','placeholder':'intitule'}}) }}
+                                            {{ form_errors(formPart.intitule) }}
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Designation:</label>
+                                            {{ form_widget(formPart.description, {'attr': {'required' :'required','class': 'form-control col-lg-8 summernote ','placeholder':'Designation'}}) }}
+                                            {{ form_errors(formPart.description) }}
+                                        </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-link" data-dismiss="modal">Annuler</button> 
+                                <button type="submit" class="btn bg-success">Valider <i class="icon-checkmark ml-2"></i></button>
+                            </div>
+                        {{ form_rest(formPart) }}
+                        {{ form_end(formPart) }}
+                        </div>
+                    </div>
+                </div>
+                <!-- /default modal -->
+            
+ 
+<script>
+
+    $(".buttonquestion").on("click", function(){
+        var quiz = $(this).attr("data-quiz");
+        var part = $(this).attr("data-part");
+         $('.Boxpart').val(part);
+         $('.Boxquiz').val(quiz);
+    });
+
+
+</script>
+{% endblock %}

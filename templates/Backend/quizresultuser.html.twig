@@ -1,0 +1,25 @@
+{% if quizresult is not null %}
+
+                                <div class="text-center">
+                <h6 class="mb-0 font-weight-semibold">{{quizresult.dateend | date('d-m-Y  H:i ') }} </h6>
+              </div>
+              <div class="row col-lg-12">
+                                {% if quizresult.note > 60 %}{% set foo = 'success' %} {% endif %}
+                                {% if quizresult.note < 60 %}{% set foo = 'warning' %} {% endif %}
+                                {% if quizresult.note < 40 %}{% set foo = 'danger' %} {% endif %}
+                                {% if quizresult.note == 100 %}{% set foo = 'teal' %} {% endif %}
+<div class="col-lg-8 progress rounded-round" style="margin-bottom: 20px">
+                <div class="progress-bar bg-{{foo}}" style="width: {{ quizresult.note |round(2, 'floor') }}%">
+                  <span>{{ quizresult.note |round(2, 'floor') }}</span>
+                </div>
+              </div>
+
+                 </div>
+
+                <a href="{{ path('backend_quizresultshow', {'quiz':quiz.id,'quizresult':quizresult.id}) }}"  class="btn bg-info btn-labeled btn-labeled-right ml-auto"><b><i class="icon-paperplane"></i></b> Résultat Quiz</a>
+
+                 <a href="{{ path('backend_quiz', {'quiz':quiz.id}) }}"  class="btn bg-teal-400 btn-labeled btn-labeled-right ml-auto"><b><i class="icon-paperplane"></i></b> Passer le Quiz</a>
+
+{% else %}
+<a href="{{ path('backend_quiz', {'quiz':quiz.id}) }}"  class="btn bg-teal-400 btn-labeled btn-labeled-right ml-auto"><b><i class="icon-paperplane"></i></b> Passer le Quiz</a>
+{% endif %}

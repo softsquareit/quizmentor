@@ -1,0 +1,74 @@
+
+
+      {% if is_granted('ROLE_FORMER') %} 
+<div class="row  ">
+<div class="card">
+                                <div class="card-header header-elements-inline card-header bg-teal">
+                                    <h5 class="card-title"> <i class="icon-users4"></i>  Liste des classes  </h5>
+                                    <div class="header-elements">
+                                        <div class="list-icons"> 
+                                        </div>
+                                    </div>
+                                </div>
+</div>
+                <div class="row col-lg-12">
+                    {% for classroom in app.user.classrooms %} 
+                    <div class="col-lg-3">
+                        <a href="{{ path('backend_former_activeclassroom', {'classroom':classroom.id}) }}" class="card card-body border-top-info text-center {% if app.user.classroomactive is not null and classroom.id == app.user.classroomactive.id %}bg-teal{% else %} bg-light {% endif %}">
+                            <div class="text-center">
+                                <img src="{{ absolute_url(asset('backend/img/classroom.png')) }}" class="border-slate-300 border-3 rounded-round" data-pagespeed-url-hash="758139638"  style="width: 100px;background: #eeeeee;">
+                                <img src="" width="20" style="width:20px !important" alt="">
+                                <h5 class="card-title"><b>{{classroom.name}} {{classroom.level.name}}</b></h5>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor  %}
+                </div>
+        {% if app.user.classroomactive is not null %}
+<div class="card">
+    <div class="card-header header-elements-inline card-header bg-pink">
+        <h5 class="card-title"> <i class="icon-users4"></i>  Liste des élèves </h5>
+        <div class="header-elements">
+            <div class="list-icons"> 
+            </div>
+        </div>
+    </div>
+</div>
+
+                <div class="row col-lg-12">
+                    {% for student in app.user.classroomactive.students %} 
+                    <div class="col-lg-3">
+                        <a href="{{ path('backend_former_activestudent', {'student':student.id}) }}" class="card card-body border-top-info text-center {% if app.user.studentactive is not null and student.id == app.user.studentactive.id %}bg-pink{% else %} bg-light {% endif %}">
+                            <div class="text-center">
+                                <img src="{{ absolute_url(asset('backend/img/user.png')) }}" class="border-slate-300 border-3 rounded-round" data-pagespeed-url-hash="758139638"  style="width: 100px;background: #eeeeee;">
+                                <img src="" width="20" style="width:20px !important" alt="">
+                                <h5 class="card-title"><b>{{student.firstname}} {{student.lastname}}</b></h5>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor  %}
+                </div>
+                  {% endif %}
+        </div>
+         <div class="row col-lg-12">
+                   
+                   
+
+                        {% if  is_granted('ROLE_FORMER')   %}
+                          {% set subjects = app.user.subjects %}
+                        {% endif %}
+                                {% for subject in subjects %} <div class="col-lg-3"><a href="{{ path('backend_lacune_subject', {'subject':subject.id}) }}" class="card card-body border-top-info text-center "><i class="icon-atom2 mr-3 text-warning icon-2x"></i><h5 class="card-title"><b>Compétences {{subject.name}}</b></h5></a> </div>
+                                {% endfor %}
+                                {% for subject in subjects %} <div class="col-lg-3"><a href="{{ path('backend_quizresult_liste_subject', {'subject':subject.id}) }}" class="card card-body border-top-info text-center "><i class="icon-clipboard6  text-danger  mr-3 icon-2x"></i><h5 class="card-title"><b>Quiz {{subject.name}}</b></h5></a></div>
+                                {% endfor %}
+                                 <div class="col-lg-3">
+                                 <a href="{{ path('backend_dashboardprogress') }}" class="card card-body border-top-info text-center "><i class="icon-stats-dots text-success  mr-3 icon-2x"></i>
+                                 <div><h5 class="card-title"><b>Progrés</b></h5></div></a></div>
+                                 {% if  app.user.studentactive is not null and app.user.studentactive.badge is not null  %} 
+                                 <div class="col-lg-3">
+                                 <a href="{{ path('backend_badgeformer') }}" class="card card-body border-top-info text-center ">
+                                 <div><img src="{{ absolute_url(asset('upload/badge/'~ app.user.studentactive.badge.icon )) }}" width="40" style="width:40px !important" >Badge {{ app.user.studentactive.badge.intitule }} <div class="opacity-50">{{ app.user.studentactive.point }} points</div></div></a>   
+                                </div>
+                                     {% endif %}
+                    </div>
+  {% endif %} 

@@ -1,0 +1,115 @@
+{# templates/index.html.twig #}
+{% extends 'Backend/layout.html.twig' %}
+{% block title %}Liste des origines{% endblock %}
+	{% block scriptsheets %}
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/datatables.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/selects/select2.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_basic.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/jszip/jszip.min.js')) }}"></script> 
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/pdfmake/pdfmake.min.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/pdfmake/vfs_fonts.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/buttons.min.js')) }}"></script>
+
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/invoice_archive.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_extension_buttons_html5.js')) }}"></script>
+    <style type="text/css">
+    	.buttons-excel, .buttons-pdf, .buttons-copy{display: none}
+    </style>
+	<!-- /theme JS files -->
+    {% endblock %}
+
+
+{% block content %}
+    <!-- Content area -->
+            <div class="content">
+
+
+				<!-- State saving -->
+				<div class="card">
+					<div class="card-header header-elements-inline card-header bg-teal">
+						<h5 class="card-title"><i class="icon-earth"></i> Liste des règles</h5>
+					</div>
+					<p>
+						
+		 {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-styled-right alert-arrow-right alert-dismissible">
+									<button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+									<span class="font-weight-semibold">{{ message }}</span> 
+							    </div>{% endfor %}
+
+        {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger alert-styled-right alert-dismissible">
+									<button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+									<span class="font-weight-semibold">{{ message }}</span> 
+							    </div>{% endfor %}
+					</p>
+
+					<table class="table datatable-button-html5-columns">
+						<thead>
+							<tr>
+								<th class="">Id</th>
+								<th >Intitule</th>
+								<th >Détail</th>
+								<th >Chapitre</th>
+								<th >Matière</th>
+								<th >Modifier</th>
+								<th>Suppression</th>
+
+							</tr>
+						</thead>
+						<tbody>
+							{% for ligne in liste %}
+							<tr>
+								<td> {{ ligne.id }}</td>
+								<td class="m-0 font-weight-semibold ">{{ ligne.name }}</td>
+								</td>
+								<td>{{ ligne.description | raw }}</td>
+								<td>{% if ligne.chapter is not null %}{{ligne.chapter.name}}{% endif %}</td>
+								<td>{% if ligne.chapter is not null and ligne.chapter.subject %}{{ligne.chapter.subject.name}}{% endif %}</td>
+								<td >{% if ligne.chapter is not null %}<a href="{{ path('backend_rule_edit', {'id':ligne.id,'chapter':ligne.chapter.id}) }}"
+                           class="btn btn-outline-info btn-sm"
+                           data-message="Etes-vous sûr de Supprimer ?"
+                           title="Cliquer pour archiver"><i class="icon-pencil7 mr-2"></i></a>{% endif %}</td>
+								<td class="text-center">
+                           <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal_theme_danger{{ ligne.id }}"> <i class="icon-trash"></i></button>
+								</td>
+							</tr>
+
+	            <!-- Danger modal -->
+				<div id="modal_theme_danger{{ ligne.id }}" class="modal fade" tabindex="-1">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header bg-danger">
+								<h6 class="modal-title">Suppression</h6>
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+							</div>
+
+							<div class="modal-body">
+								<h6 class="font-weight-semibold">Etes-vous sûr de Supprimer ?</h6>
+							</div>
+
+							<div class="modal-footer">
+								<button type="button" class="btn btn-link" data-dismiss="modal">Annuler</button>
+								<a href="{{ path('backend_rule_delete', {'id':ligne.id}) }}"
+                           class="btn bg-danger" data-message="Etes-vous sûr de Supprimer ?">Supprimer</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /default modal -->
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+				<!-- /state saving -->
+            </div>
+            
+
+
+
+{% endblock %}

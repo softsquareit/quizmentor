@@ -1,0 +1,230 @@
+
+
+                <!-- State saving -->
+                <div class="card">
+        <p>
+                        
+         {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-styled-right alert-arrow-right alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+                                    <span class="font-weight-semibold">{{ message }}</span> 
+                                </div>{% endfor %}
+
+        {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger alert-styled-right alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+                                    <span class="font-weight-semibold">{{ message }}</span> 
+                                </div>{% endfor %}
+                    </p>
+                        <!-- Grey background -->
+                                {% if quiz is defined and quiz is not null %}
+                                   <div class="card-header header-elements-inline card-header bg-teal">
+                                    <h5 class="card-title"><i class="icon-pencil7"></i>Question</h5>
+                                    <div class="header-elements">
+                                        <div class="list-icons">
+                                           <a href="{{ path('backend_quiz_edit', {'id':quiz.id}) }}" class="btn alpha-blue text-blue-800 border-blue-600"><i class="icon-list mr-2"></i>Quiz : {{ quiz.intitule }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% else %}
+                                <div class="card-header header-elements-inline card-header bg-teal">
+                                    <h5 class="card-title"><i class="icon-pencil7"></i> Question</h5>
+                                    <div class="header-elements">
+                                        <div class="list-icons">
+                                           <a href="{{ path('backend_question_liste') }}" class="btn alpha-blue text-blue-800 border-blue-600"><i class="icon-list mr-2"></i>La liste</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+            
+                         {{ form_start(form, {'attr': {'novalidate': 'novalidate','class': 'col-lg-12'  }}) }}
+
+                                <div class="card-body row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Titre:</label>
+                                            {{ form_widget(form.intitule, {'attr': {'required' :'required','class': 'form-control col-lg-4 summernote','placeholder':'intitule'}}) }}
+                                            {{ form_errors(form.intitule) }}
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Règles:</label>
+                                            <div class="col-lg-7">
+                                            {{ form_widget(form.rule, {'attr': {'required' :'required','class': 'form-control select-search col-lg-4','placeholder':'rule'}}) }}
+                                            {{ form_errors(form.rule) }}</div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Lacunes:</label>
+                                            <div class="col-lg-7">
+                                            {{ form_widget(form.gaps, {'attr': {'required' :'required','class': 'form-control select-search col-lg-4','placeholder':'gaps'}}) }}
+                                            {{ form_errors(form.gaps) }}</div>
+                                        </div>
+
+
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Matière:</label>
+                                            <div class="col-lg-7">
+                                            {{ form_widget(form.subject, {'attr': {'required' :'required','class': 'form-control col-lg-4','placeholder':'matière'}}) }}
+                                            {{ form_errors(form.subject) }}</div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Chapitres:</label>
+                                            <div class="col-lg-7">
+                                            {{ form_widget(form.chapters, {'attr': {'required' :'required','class': 'form-control select col-lg-4','placeholder':'chapters'}}) }}
+                                            {{ form_errors(form.chapters) }}</div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Niveau:</label>
+                                            <div class="col-lg-7">
+                                            {{ form_widget(form.level, {'attr': {'required' :'required','class': 'form-control select-search col-lg-4','placeholder':'level'}}) }}
+                                            {{ form_errors(form.level) }}</div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Type:</label>
+                                            <div class="col-lg-7">
+                                            {{ form_widget(form.type, {'attr': {'required' :'required','class': 'form-control select-search col-lg-4','placeholder':'type'}}) }}
+                                            {{ form_errors(form.type) }}</div>
+                                        </div>
+
+ <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Proposition:</label>
+                                            <div class="col-lg-12">
+
+
+                    {% macro information_prototype(reponse) %}
+
+<div class=" col-lg-12 row ">
+<div class="col-lg-7">
+                 {{ form_widget(reponse.name, {'attr': { 'class': 'form-control input-medium summernote summernotetext'}}) }}
+                                        {{ form_errors(reponse.name) }}
+
+</div>
+<div class="col-lg-2">
+
+  {{ form_widget(reponse.live, {'attr': {'data-on-color': 'success','data-off-color': 'danger','data-on-text': 'vrai','data-off-text': 'faux','class': 'switch'}}) }}
+                                    {{ form_errors(reponse.live) }}
+</div>
+
+     {% if reponse.vars.data is not null and reponse.vars.data is defined %}  
+ <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal_theme_danger{{ reponse.vars.data.id }}"  style="height: 40px;"> <i class="icon-trash"></i></button>
+
+                <!-- Danger modal -->
+                <div id="modal_theme_danger{{ reponse.vars.data.id }}" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger">
+                                <h6 class="modal-title">Suppression</h6>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <div class="modal-body">
+                                <h6 class="font-weight-semibold">Etes-vous sûr de Supprimer ?</h6>
+                                <h6 class="font-weight-semibold">{{ reponse.vars.data.name }}</h6>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-link" data-dismiss="modal">Annuler</button>
+                                <a href="{{ path('backend_question_suggestion_delete', {'question':reponse.vars.data.question.id,'suggestion':reponse.vars.data.id}) }}"
+                           class="btn bg-danger" data-message="Etes-vous sûr de Supprimer ?">Supprimer</a>
+                            </div>
+                        </div>
+                    </div>
+                </div> {% else %}
+ <button type="button" class="remove-reponse btn btn-outline-danger"  style="height: 40px;"> <i class="icon-trash"></i></button>
+                                {% endif %}
+
+</div>
+                    {% endmacro %} <div class="reponses"  data-prototype="{{ _self.information_prototype(form.suggestions.vars.prototype)|e }}">
+                        {% for reponse in form.suggestions %}
+                            {{ _self.information_prototype(reponse) }}
+                        {% endfor %}
+                    </div>
+    </div>
+
+
+ <div class="card-footer d-flex justify-content-between align-items-center">
+                                    <a href="{{ path('backend_chapter_liste') }}"  class="btn btn-light">Cancel <i class="icon-cross2 ml-2"></i></a>
+                                    <button type="submit" class="btn bg-success">Valider <i class="icon-checkmark ml-2"></i></button>
+                                </div>
+                                      
+                                    </div>
+
+                                </div>
+</div>
+                               
+                        {{ form_end(form) }}
+
+
+                </div>
+
+
+   <script type="text/javascript">
+        // add row
+     $("[type='checkbox']").bootstrapSwitch();
+        var $addReponseLink = $('<br><br><a href="#" class="add_reponse_link btn btn-primary"> Ajouter une réponse à choix <i class="glyphicon glyphicon-plus"></i></a>');
+        var $newLinkLiExp = $('<span></span>').append($addReponseLink);
+
+        ///Add Reponse:
+
+        jQuery(document).ready(function () {
+            // Get the ul that holds the collection of sections
+            var $collectionHolder = $('div.reponses');
+
+            // add the "add a section" anchor and li to the sections ul
+            $collectionHolder.append($newLinkLiExp);
+
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+            $addReponseLink.on('click', function (e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // add a new section form (see code block below)
+                addReponseForm($collectionHolder, $newLinkLiExp);
+                $("[type='checkbox']").bootstrapSwitch();
+            });
+
+
+        });
+
+        /// Add Reponse Form
+
+        function addReponseForm($collectionHolder, $newLinkLiExp) {
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolder.data('prototype');
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            // Replace '$$name$$' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newFormExp = prototype.replace(/__name__/g, index);
+
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+
+            // Display the form in the page in an li, before the "Add a section" link li
+            var $newFormLiExp = $('<span></span>').append(newFormExp);
+
+
+            $newLinkLiExp.before($newFormLiExp);
+           $(".summernotetext").summernote();
+
+            // handle the removal, just for this example
+            $('.remove-reponse').click(function (e) {
+                e.preventDefault();
+
+                $(this).parent().remove();
+
+                return false;
+            });
+        }
+    </script>
+
+
+
+      

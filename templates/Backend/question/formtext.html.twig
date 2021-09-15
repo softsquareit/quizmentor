@@ -1,0 +1,224 @@
+{# templates/index.html.twig #}
+{% extends 'Backend/layout.html.twig' %} 
+    {% block scriptsheets %}
+      <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/datatables.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/selects/select2.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_basic.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/styling/switchery.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/styling/switch.min.js')) }}"></script>  
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/styling/uniform.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/selects/select2.min.js')) }}"></script> 
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/uploaders/fileinput/plugins/purify.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/uploaders/fileinput/plugins/sortable.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/uploaders/fileinput/fileinput.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/form_actions.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/uploader_bootstrap.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/form_select2.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_extension_buttons_html5.js')) }}"></script>
+
+    {% endblock %}
+
+
+{% block content %}
+    <!-- Content area -->
+            <div class="content">
+
+                <!-- Form validation -->
+
+                <!-- State saving -->
+                <div class="card">
+        <p>
+                        
+         {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-styled-right alert-arrow-right alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+                                    <span class="font-weight-semibold">{{ message }}</span> 
+                                </div>{% endfor %}
+
+        {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger alert-styled-right alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+                                    <span class="font-weight-semibold">{{ message }}</span> 
+                                </div>{% endfor %}
+                    </p>
+                        <!-- Grey background -->
+                                {% if quiz is defined and quiz is not null  and ligne.subject is not null and ligne.level is not null  %}
+                                                <div class="card-header header-elements-inline card-header bg-teal">
+                                    <h5 class="card-title"><i class="icon-pencil7"></i>
+<a href="{{ path('backend_former_level', {'id':ligne.level.id}) }}" class="btn alpha-blue text-blue-800 border-blue-600">Liste des Matière </a> /  Matière {{ ligne.subject.name }} </h5>
+                                    <div class="header-elements">
+                                        <div class="list-icons">
+                                           <a href="{{ path('backend_chapter_liste_subject', {'id':ligne.subject.id,'level':ligne.level.id}) }}" class="btn alpha-blue text-blue-800 border-blue-600"><i class="icon-list mr-2"></i>Chapitre {{ ligne.subject.name }} </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% elseif ligne.subject is not null and ligne.level is not null %}
+                                   <div class="card-header header-elements-inline card-header bg-teal">
+                                    <h5 class="card-title"><a href="{{ path('backend_former_level', {'id':ligne.level.id}) }}" class="btn alpha-blue text-blue-800 border-blue-600">Niveau {{ ligne.level.name }} </a> / <a href="{{ path('backend_chapter_liste_subject', {'id':ligne.subject.id,'level':ligne.level.id}) }}" class="btn alpha-blue text-blue-800 border-blue-600"><i class="icon-list mr-2"></i>Matière {{ ligne.subject.name }} </a> / 
+{% if ligne.chapter is defined and ligne.chapter is not null and ligne.subject is not null %}
+<a href="{{ path('backend_chapter_editsubject', {'subject':ligne.subject.id,'id':ligne.chapter.id}) }}" class="btn alpha-blue text-blue-800 border-blue-600"><i class="icon-list mr-2"></i> Chapitre : {{ ligne.chapter.name }}  </a>{% endif %}
+                                    </h5>
+                                    <div class="header-elements">
+                                        <div class="list-icons">
+                                            {% if ligne.subject is defined and ligne.subject is not null and ligne.level is not null %}
+                                           <a href="{{ path('backend_chapter_liste_subject', {'id':ligne.subject.id,'level':ligne.level.id}) }}" class="btn alpha-blue text-blue-800 border-blue-600"><i class="icon-list mr-2"></i>Chapitre {{ ligne.subject.name }} </a>
+                                           {% if ligne is defined %}
+                                           <a href="#" data-toggle="modal" data-target="#modal_add_question_chapter"   class="btn alpha-blue text-blue-800 border-blue-600"><i class="icon-pencil7"></i>Ajouter une autre Question </a>{% endif %}
+                                           {% else %}
+                                           <a href="{{ path('backend_chapter_liste') }}" class="btn alpha-blue text-blue-800 border-blue-600"><i class="icon-list mr-2"></i>La liste</a>
+                                           {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+            
+                         {{ form_start(form, {'attr': {'novalidate': 'novalidate','class': 'col-lg-12'  }}) }}
+
+                                <div class="card-body row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Titre:</label>
+                                            {{ form_widget(form.intitule, {'attr': {'required' :'required','class': 'form-control col-lg-4 summernote','placeholder':'intitule'}}) }}
+                                            {{ form_errors(form.intitule) }}
+                                        <div class="col-lg-3 text-center">
+                                            {% if ligne.type == "unique" %}
+                                          <a href="#" class="btn btn-primary btn-float"><i class="icon-clipboard2 icon-2x"></i> <span>Choix unique</span></a>
+                                            {% endif %}
+                                            {% if ligne.type == "multiple" %}
+                                          <a href="#" class="btn bg-purple-400 btn-float"><i class="icon-list icon-2x"></i> <span>Choix multiple</span></a>
+                                            {% endif %}
+                                            {% if ligne.type == "text" %}
+                                          <a href="#" class="btn bg-teal-400 btn-float"><i class="icon-pencil7 icon-2x"></i> <span>Réponse text</span></a>
+                                            {% endif %}
+                                            {% if ligne.type == "blanks" %}
+                                          <a href="#" class="btn btn-danger btn-float"><i class="icon-insert-template icon-2x"></i> <span>Filling the blanks</span></a>
+                                            {% endif %}
+                                        </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Astuce:</label>
+                                            {{ form_widget(form.rule, {'attr': {'required' :'required','class': 'form-control col-lg-4 summernote','placeholder':'intitule'}}) }}
+                                            {{ form_errors(form.intitule) }}
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Difficulté:</label>
+                                            <div class="col-lg-7">
+                                            {{ form_widget(form.difficulty, {'attr': {'required' :'required','class': 'form-control select-search col-lg-4','placeholder':'difficulty'}}) }}
+                                            {{ form_errors(form.difficulty) }}</div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Lacunes:</label>
+                                            <div class="col-lg-7">
+                                            {{ form_widget(form.gaps, {'attr': {'required' :'required','class': 'form-control select-search col-lg-4','placeholder':'gaps'}}) }}
+                                            {{ form_errors(form.gaps) }}</div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Chapitres:</label>
+                                            <div class="col-lg-7">
+                                            {{ form_widget(form.chapters, {'attr': {'required' :'required','class': 'form-control select col-lg-4','placeholder':'chapters'}}) }}
+                                            {{ form_errors(form.chapters) }}</div>
+                                        </div>
+                                        
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Niveau:</label>
+                                            <div class="col-lg-7">
+                                            {{ form_widget(form.level, {'attr': {'required' :'required','class': 'form-control select-search col-lg-4','placeholder':'level'}}) }}
+                                            {{ form_errors(form.level) }}</div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Type :</label> 
+                                                {{ form_widget(form.prerequis, {'attr': {'data-on-color': 'success','data-off-color': 'danger','data-on-text': 'Prérequis','data-off-text': 'Objectifs','class': 'switch'}}) }}
+                                    {{ form_errors(form.prerequis) }}
+
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Statut :</label> 
+                                                {{ form_widget(form.active, {'attr': {'data-on-color': 'success','data-off-color': 'danger','data-on-text': 'active','data-off-text': 'desactive','class': 'switch'}}) }}
+                                    {{ form_errors(form.active) }}
+
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Réponse:</label>
+                                            {% if ligne.type == "blanks" %}
+                                            <div class="alert alert-info alert-styled-left alert-dismissible col-lg-8">
+                                    <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+                                    <span class="font-weight-semibold">Note</span> pour ajouter des propositions utiliser les accolades ' [ ] ' , 
+<br> <b>Exemple : </b> I <a href="#" class="alert-link">[ speak ]</a> english  .
+<br> pour les reponses multiple utiliser  '| ' 
+<br> <b>Exemple : </b> I <a href="#" class="alert-link">[ am | 'm ]</a> a student  .
+                                </div>
+<textarea></textarea>
+
+                                {% endif %}
+                                             {{ form_widget(form.reponse, {'attr': {'required' :'required','class': 'form-control col-lg-4 summernote','placeholder':'reponse'}}) }}
+                                            {{ form_errors(form.reponse) }}
+                                        </div>
+                                        <div class="col-lg-8 ">
+                                            {{ render(controller('App\\Controller\\Backend\\DefaultController::questionblanksshow', {'question': ligne.id } )) }}
+                                        </div>
+
+ <div class="form-group row">
+                                           
+
+
+ <div class="card-footer d-flex justify-content-between align-items-center">
+                                   
+                                    <button type="submit" class="btn bg-success">Valider <i class="icon-checkmark ml-2"></i></button>
+                                </div>
+                                      
+                                    </div>
+
+                                </div>
+</div>
+                               
+                        {{ form_end(form) }}
+
+
+                </div>
+
+            </div>
+ 
+            {% if ligne.chapter is not null %}
+              <!-- Danger modal -->
+                <div id="modal_add_question_chapter" class="modal fade " tabindex="-1">
+                    <div class="modal-dialog  modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header  bg-teal">
+                                <h6 class="modal-title">Ajouter une question chapitre : {{ ligne.chapter.name }} </h6>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                    <div class="col-lg-12 row text-center">
+                                        <div class="col-lg-3 text-center">
+                                          <a href="{{ path('backend_question_add_chapter', {'type':'unique','chapter':ligne.chapter.id}) }}" class="btn btn-primary btn-float"><i class="icon-clipboard2 icon-2x"></i> <span>Choix unique</span></a>
+                                        </div>
+                                        <div class="col-lg-3 text-center">
+                                          <a href="{{ path('backend_question_add_chapter', {'type':'multiple','chapter':ligne.chapter.id}) }}" class="btn bg-purple-400 btn-float"><i class="icon-list icon-2x"></i> <span>Choix multiple</span></a>
+                                        </div>
+                                        <div class="col-lg-3 text-center">
+                                          <a href="{{ path('backend_question_add_chapter', {'type':'text','chapter':ligne.chapter.id}) }}" class="btn bg-teal-400 btn-float"><i class="icon-pencil7 icon-2x"></i> <span>Réponse text</span></a>
+                                        </div>
+                                        <div class="col-lg-3 text-center">
+                                          <a href="{{ path('backend_question_add_chapter', {'type':'blanks','chapter':ligne.chapter.id}) }}" class="btn btn-danger btn-float"><i class="icon-insert-template icon-2x"></i> <span>Filling the blanks</span></a>
+                                        </div>
+                                     </div>
+                            </div>
+
+                            <div class="modal-footer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        {% endif %}
+   <script type="text/javascript">
+        // add row
+     $("[type='checkbox']").bootstrapSwitch();
+ </script>
+                
+{% endblock %}
+      

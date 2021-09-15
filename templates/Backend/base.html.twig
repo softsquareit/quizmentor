@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Quiz Mentor{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="{{asset('backend/img/logo-xs.ico')}}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+    <link href="{{ absolute_url(asset('backend/global_assets/css/icons/icomoon/styles.css')) }}" rel="stylesheet"/>
+    <link href="{{ absolute_url(asset('backend/assets/css/bootstrap.min.css')) }}" rel="stylesheet"/>
+    <link href="{{ absolute_url(asset('backend/assets/css/bootstrap_limitless.min.css')) }}" rel="stylesheet"/>
+    <link href="{{ absolute_url(asset('backend/assets/css/layout.min.css')) }}" rel="stylesheet"/>
+    <link href="{{ absolute_url(asset('backend/assets/css/components.min.css')) }}" rel="stylesheet"/>
+    <link href="{{ absolute_url(asset('backend/assets/css/colors.min.css')) }}" rel="stylesheet"/>
+
+        {% block stylesheets %}
+        {% endblock %}
+    <!-- Core JS files -->
+    <script src="{{ absolute_url(asset('backend/global_assets/js/main/jquery.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/main/bootstrap.bundle.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/loaders/blockui.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/wizards/steps.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/ui/ripple.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/assets/js/app.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/form_wizard.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/validation/validate.min.js')) }}"></script>
+        {% block scriptsheets %}
+    
+        {% endblock %}
+    <!-- include summernote css/js-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.js"></script>
+
+    <!-- KaTeX -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js"></script>
+    
+    <script src="https://rawgit.com/tylerecouture/summernote-math/master/summernote-math.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T8P53F4NMB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-T8P53F4NMB');
+</script>
+{% if  is_granted('ROLE_ADMIN') %} 
+<style type="text/css">
+    .sidebar-light .nav-sidebar .nav-link {
+    color: rgb(255 255 255);
+    font-weight: bold;
+    font-size: large;
+}
+.sidebar-light .nav-sidebar .nav-link:not(.disabled):hover {
+    color: #074a7d;
+    background-color: #eeeded;
+}
+</style> {% endif %}
+    </head>
+    <body>
+        {% block body %}{% endblock %}
+        {% block javascripts %}
+        {% endblock %}
+         <script>
+      $('.summernote').summernote({
+        placeholder: 'Hello stand alone ui',
+        tabsize: 2,
+        height: 120,
+        toolbar: [
+          ['style', ['style']],
+          ['font', ['bold', 'underline', 'clear']],
+          ['color', ['color']],
+          ['para', ['ul', 'ol', 'paragraph']],
+          ['table', ['table']],
+          ['insert', ['math',  'picture']],
+          ['view', ['fullscreen', 'codeview', 'help']]
+        ]
+      });
+{% if not is_granted('ROLE_ADMIN') %} 
+      $(document).ready(function(){
+       
+    $('table tr').click(function(){
+         $href=$(this).attr('href')+'';
+        if( $href != 'undefined')
+        window.location = $(this).attr('href');
+        return false;
+    });
+});
+      {% endif %}
+    </script>
+
+    </body>
+</html>

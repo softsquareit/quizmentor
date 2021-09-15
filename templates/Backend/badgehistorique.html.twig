@@ -1,0 +1,122 @@
+{# templates/index.html.twig #}
+{% extends 'Backend/layout.html.twig' %}
+{% block title %} Bienvenue {% endblock %}
+    {% block scriptsheets %}
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/datatables.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/selects/select2.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_basic.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/jszip/jszip.min.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/pdfmake/pdfmake.min.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/pdfmake/vfs_fonts.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/buttons.min.js')) }}"></script>
+
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_extension_buttons_html5.js')) }}"></script>
+    <style type="text/css">
+        .buttons-pdf, .buttons-copy{display: none}
+    </style>
+    <!-- /theme JS files -->
+    {% endblock %}
+
+
+{% block content %}
+    <!-- Content area -->
+            <div class="content">
+
+                <!-- State saving -->
+            
+                 {{ render(controller(
+        'App\\Controller\\Backend\\DefaultController::classroomformer')) }}
+    {% if is_granted('ROLE_STUDENT') or is_granted('ROLE_FAMILY')  or is_granted('ROLE_FORMER') %}  
+
+<div class="card">
+                    <div class="card-header header-elements-inline card-header bg-pink">
+                        {% set pointtotal = 0 %}
+                         {% for ligne in badgehistorique %}  
+                             {% set pointtotal = pointtotal + ligne.point %}
+                         {% endfor %}
+                        <h5 class="card-title"><i class="icon-earth"></i> Total points formateur  {{ subject.name }}  : {{ pointtotal }} Points </h5>
+                                    <div class="header-elements">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_add"> <i class="icon-clipboard6"></i>Ajouter</button>
+                                    </div>
+                    </div>
+                          {% for ligne in badgehistorique %} 
+                            <div  class="row col-lg-12" style="font-size: 1.2em;
+    border-bottom: #e91e63 1px solid;
+    margin: 5px;
+    text-align: center;
+    font-weight: bold;">
+                                <div  class="col-lg-3">{{ ligne.date | date ('d-m-Y') }}</div> 
+                                <div class="col-lg-3">{{ ligne.subject.name }}</div> 
+                                <div class="col-lg-2">{{ ligne.point }} points</div> 
+                                <div class="col-lg-2"><button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal_theme_danger{{ ligne.id }}"> <i class="icon-trash"></i></button>
+                                      <!-- Danger modal -->
+                <div id="modal_theme_danger{{ ligne.id }}" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger">
+                                <h6 class="modal-title">Suppression</h6>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <div class="modal-body">
+                                <h6 class="font-weight-semibold">Etes-vous sûr de Supprimer {{ ligne.point }} points ?</h6>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-link" data-dismiss="modal">Annuler</button>
+                                <a href="{{ path('backend_badgehistorique_delete', {'id':ligne.id}) }}"
+                           class="btn bg-danger" data-message="Etes-vous sûr de Supprimer ?">Supprimer</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /default modal -->
+
+                                </div> 
+                            </div>
+                          {% endfor %}
+                      
+                    </div>
+    {% endif %}
+                        
+                <!-- /state saving -->
+            </div>
+
+
+
+    <!-- Danger modal -->
+                <div id="modal_add" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-info">
+                                <h6 class="modal-title">Ajouter</h6>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate','class': 'col-lg-12'  }}) }}
+                            <div class="modal-body">
+                       <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Point:</label>
+                                        {{ form_widget(form.point, {'attr': {'required' :'required','class': 'form-control col-lg-4 ','placeholder':'Designation'}}) }}
+                                        {{ form_errors(form.point) }}
+                                    </div>   
+                        </div>
+
+                        <div class="modal-footer">
+                             <button type="submit" class="btn bg-success">Valider <i class="icon-checkmark ml-2"></i></button>
+                        </div>
+                    {{ form_end(form) }}
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /default modal -->
+
+
+                                       
+
+            
+{% endblock %}

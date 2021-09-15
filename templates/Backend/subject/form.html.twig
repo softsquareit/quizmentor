@@ -1,0 +1,283 @@
+{# templates/index.html.twig #}
+{% extends 'Backend/layout.html.twig' %}
+    {% block scriptsheets %}
+      <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/datatables.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/selects/select2.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_basic.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/styling/switchery.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/styling/switch.min.js')) }}"></script>  
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/styling/uniform.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/selects/select2.min.js')) }}"></script> 
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/uploaders/fileinput/plugins/purify.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/uploaders/fileinput/plugins/sortable.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/uploaders/fileinput/fileinput.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/form_actions.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/uploader_bootstrap.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/form_select2.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_extension_buttons_html5.js')) }}"></script>
+    <style type="text/css">
+        .buttons-excel, .buttons-pdf, .buttons-copy{display: none}
+    </style>
+    {% endblock %} 
+
+
+{% block content %}
+    <!-- Content area -->
+            <div class="content">
+
+                <!-- Form validation -->
+
+                <!-- State saving -->
+                <div class="card">
+
+                        <!-- Grey background -->
+                                <div class="card-header header-elements-inline card-header bg-teal">
+                                    <h5 class="card-title"><i class="icon-pencil7"></i> Matière</h5>
+                                    <div class="header-elements">
+                                        <div class="list-icons">
+                                           <a href="{{ path('backend_subject_liste') }}" class="btn alpha-blue text-blue-800 border-blue-600"><i class="icon-list mr-2"></i>La liste</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                         {{ form_start(form, {'attr': {'novalidate': 'novalidate','class': 'col-lg-12'  }}) }}
+                                <div class="card-body row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Designation:</label>
+                                            {{ form_widget(form.name, {'attr': {'required' :'required','class': 'form-control col-lg-4 ','placeholder':'Designation'}}) }}
+                                            {{ form_errors(form.name) }}
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Compte Free :</label> 
+                                                {{ form_widget(form.free, {'attr': {'data-on-color': 'success','data-off-color': 'danger','data-on-text': 'Gratuit','data-off-text': 'payant','class': 'switch'}}) }}
+                                    {{ form_errors(form.free) }}
+
+                                        </div>
+                                        
+                                         <div class="card-footer d-flex justify-content-between align-items-center">
+                                    <a href="{{ path('backend_subject_liste') }}"  class="btn btn-light">Cancel <i class="icon-cross2 ml-2"></i></a>
+                                    <button type="submit" class="btn bg-success">Valider <i class="icon-checkmark ml-2"></i></button>
+                                </div>
+                                    </div>
+                                </div>
+
+                               
+                        {{ form_end(form) }}
+
+
+                </div>
+                <!-- /state saving -->
+
+                {% if ligne is defined %}
+
+                    <!-- State saving -->
+                <div class="card">
+                    <div class="card-header header-elements-inline card-header bg-teal">
+                        <h5 class="card-title"><i class="icon-tree7"></i> Liste des chapitres</h5>
+                                    <div class="header-elements">
+                                        <div class="list-icons">
+                                        </div>
+                                    </div>
+                    </div>
+                    <p>
+                        
+         {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-styled-right alert-arrow-right alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+                                    <span class="font-weight-semibold">{{ message }}</span> 
+                                </div>{% endfor %}
+
+        {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger alert-styled-right alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+                                    <span class="font-weight-semibold">{{ message }}</span> 
+                                </div>{% endfor %}
+                    </p>
+
+                    <table class="table datatable-button-html5-columns" id="example">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Intitule</th>
+                                <th>Ordre</th>
+                                <th>Père</th>
+                                <th>Fils</th>
+                                <th>Matière</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for chapter in chapters %}
+                            <tr>
+                                <td>{{ chapter.id }}</td>
+                                <td class="m-0 font-weight-semibold">{{ chapter.name }}</td>
+                                <td>{% if chapter.rang is not null %} {{ chapter.rang }}{% endif %}</td>
+                                <td>{% if chapter.parent is not null %} 
+                        <span class="badge bg-slate-700 align-self-center ml-auto">{{ chapter.parent.name }} </span>
+                    {% else %}--{% endif %}</td>
+                                <td>
+                            {% for son in chapter.sons %}
+                                
+                        <span class="badge bg-primary align-self-center ml-auto"> {{ son.name }} </span>
+                            {% endfor %}
+                                </td>
+                                <td>{% if chapter.subject is not null %}{{ chapter.subject.name }}{% endif %}</td>
+                                <td><a href="{{ path('backend_chapter_editsubject', {'id':chapter.id,'subject':ligne.id}) }}"
+                           class="btn btn-outline-info btn-sm"
+                           data-message="Etes-vous sûr de Supprimer ?"
+                           title="Cliquer pour archiver"><i class="icon-pencil7 mr-2"></i></a>
+                           <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal_theme_danger{{ chapter.id }}"> <i class="icon-trash"></i></button>
+                                </td>
+                            </tr>
+
+                <!-- Danger modal -->
+                <div id="modal_theme_danger{{ chapter.id }}" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger">
+                                <h6 class="modal-title">Suppression</h6>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <div class="modal-body">
+                                <h6 class="font-weight-semibold">Etes-vous sûr de Supprimer ?</h6>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-link" data-dismiss="modal">Annuler</button>
+                                <a href="{{ path('backend_chapter_delete', {'id':chapter.id}) }}"
+                           class="btn bg-danger" data-message="Etes-vous sûr de Supprimer ?">Supprimer</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /default modal -->
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="tree-sorting card card-body border-left-success border-left-2">
+                                    <ul class="mb-0">
+                            {% for parent in parents %}
+                                        <li class="expanded"><button style="margin: 2px;" type="button" class="btn bg-slate-700 btn-ladda btn-ladda-progress ladda-button" data-style="expand-left" data-spinner-size="20">{{ parent.name }}</button>
+                                            <ul>
+                                    {% for son in parent.sons %}
+                                                <li><button style="margin: 2px;"  type="button" class="btn bg-primary btn-ladda btn-ladda-progress ladda-button" data-style="expand-left" data-spinner-size="20">{{ son.name }}</button>
+                                                    <ul>
+                                                        {% for sonson in son.sons %}
+                                                        <li><button style="margin: 2px;"  type="button" class="btn  bg-blue-400 btn-ladda btn-ladda-progress ladda-button" data-style="expand-left" data-spinner-size="20">{{ sonson.name }}</button></li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </li>
+                                    {% endfor %}
+                                            </ul>
+                                        </li>
+                            {% endfor %}
+                                    </ul>
+                                </div>
+                </div>
+
+
+
+
+                    <!-- State saving -->
+                <div class="card">
+                    <div class="card-header header-elements-inline card-header bg-teal">
+                        <h5 class="card-title"><i class="icon-tree7"></i> Liste des prérequis</h5>
+                                    <div class="header-elements">
+                                        <div class="list-icons">
+                                        </div>
+                                    </div>
+                    </div>
+                    <p>
+                        
+         {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-styled-right alert-arrow-right alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+                                    <span class="font-weight-semibold">{{ message }}</span> 
+                                </div>{% endfor %}
+
+        {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger alert-styled-right alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
+                                    <span class="font-weight-semibold">{{ message }}</span> 
+                                </div>{% endfor %}
+                    </p>
+
+                    <table class="table datatable-button-html5-columns">
+                        <thead>
+                            <tr>
+                                <th class="">Id</th>
+                                <th >Intitule</th>
+                                <th class="">Ordre</th>
+                                <th >Chapitre</th>
+                                <th >Matière</th>
+                                <th >Cours</th>
+                                <th >Prérequis</th>
+                                <th >Modifier</th>
+                                <th>Suppression</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ligne in gaps %}
+                            <tr>
+                                <td> {{ ligne.id }}</td>
+                                <td class="m-0 font-weight-semibold ">{{ ligne.name }}</td>
+                                </td>
+                                <td> {{ ligne.rang }}</td>
+                                <td>{% if ligne.chapter is not null %}{{ligne.chapter.name}}{% endif %}</td>
+                                <td>{% if ligne.chapter is not null and ligne.chapter.subject %}{{ligne.chapter.subject.name}}{% endif %}</td>
+                                <td>{% if ligne.lesson %}{{ligne.lesson.name}}{% endif %}</td>
+
+                                <td class="text-center">
+                           {% if ligne.prerequis %}
+                           <button class="btn bg-success legitRipple"> Prérequis</button>
+                           {% endif %}
+                                </td>
+                                <td >{% if ligne.chapter is not null %}<a href="{{ path('backend_gap_edit', {'id':ligne.id}) }}"
+                           class="btn btn-outline-info btn-sm"><i class="icon-pencil7 mr-2"></i></a>{% endif %}</td>
+
+
+                                <td class="text-center">
+                           <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal_theme_danger{{ ligne.id }}"> <i class="icon-trash"></i></button>
+                                </td>
+
+                            </tr>
+
+                <!-- Danger modal -->
+                <div id="modal_theme_danger{{ ligne.id }}" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger">
+                                <h6 class="modal-title">Suppression</h6>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <div class="modal-body">
+                                <h6 class="font-weight-semibold">Etes-vous sûr de Supprimer ?</h6>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-link" data-dismiss="modal">Annuler</button>
+                                <a href="{{ path('backend_gap_delete', {'id':ligne.id}) }}"
+                           class="btn bg-danger" data-message="Etes-vous sûr de Supprimer ?">Supprimer</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /default modal -->
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% endif %}
+                <!-- /state saving -->
+            </div>
+            <script type="text/javascript">
+        // add row
+     $("[type='checkbox']").bootstrapSwitch();
+ </script>      
+{% endblock %}

@@ -1,0 +1,50 @@
+                        <li class="nav-item ">
+                            <a href="{{ path('backend_dashboard') }}" class="nav-link btn btn-block btn-float m-0 legitRipple "><i class="icon-home4 text-success  mr-3 icon-2x"></i>
+                                 <div>Dashboard, <div class="opacity-50">Acceuil</div></div></a>
+                        </li> 
+                            {% if is_granted('ROLE_FAMILY') %}
+                         <li class="nav-item nav-item-submenu">
+                            <a href="#" class="nav-link">
+                                <i class="icon-users2 mr-3 text-warning icon-2x"></i>
+                                    <div>
+                                 {% if app.user.studentactive is not null %}
+
+                                 {{ app.user.studentactive.firstname }} {{ app.user.studentactive.lastname }} 
+
+                                 {% endif %}<div class="opacity-50">Mes Enfants</div></div>
+                            </a> 
+                            <ul class="nav nav-group-sub" data-submenu-title="Layouts">
+                                {% for student in app.user.students %}
+                                <li class="nav-item"><a href="{{ path('backend_family_activestudent', {'student':student.id}) }}" class="nav-link"><i class="icon-atom2"></i>{{student.firstname}} {{student.lastname}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>  {% endif %}
+
+                        <li class="nav-item nav-item-submenu">
+                            <a href="#" class="nav-link">
+                                <i class="icon-atom2 mr-3 text-warning icon-2x"></i>
+                                    <div>Compétences <div class="opacity-50">Mes compétences</div></div>
+                            </a> 
+                            <ul class="nav nav-group-sub" data-submenu-title="Layouts">
+                         {% if  is_granted('ROLE_FORMER')   %}
+                          {% set subjects = app.user.subjects %}
+                        {% endif %}
+                                {% for subject in subjects %}
+                                <li class="nav-item"><a href="{{ path('backend_lacune_subject', {'subject':subject.id}) }}" class="nav-link"><i class="icon-atom2"></i>{{subject.name}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+
+                        <li class="nav-item nav-item-submenu">
+                            <a href="#" class="nav-link"><i class="icon-clipboard6  text-danger  mr-3 icon-2x"></i> 
+                                 <div>Quizz <div class="opacity-50">Mes Résultat Quizz</div></div></a>
+                            <ul class="nav nav-group-sub" data-submenu-title="Layouts">
+                                {% for subject in subjects%}
+                                <li class="nav-item"><a href="{{ path('backend_quizresult_liste_subject', {'subject':subject.id}) }}" class="nav-link"><i class="icon-list2"></i>{{subject.name}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        <li class="nav-item ">
+                            <a href="{{ path('backend_users_compte') }}" class="nav-link"><i class="icon-user text-primary  mr-3 icon-2x"></i>
+                                 <div>Profils <div class="opacity-50">Mon Compte</div></div></a>
+                        </li>

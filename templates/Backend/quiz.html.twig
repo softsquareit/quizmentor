@@ -1,0 +1,166 @@
+{# templates/index.html.twig #}
+{% extends 'Backend/layout.html.twig' %}
+{% block title %} Bienvenue {% endblock %}
+	{% block scriptsheets %}
+    {% endblock %}
+
+
+{% block content %}
+    <!-- Content area -->
+            <div class="content">
+
+				<!-- State saving -->
+       <div class="card-header header-elements-inline card-header bg-teal">
+
+         <h5 class="card-title" style="font-size: 25px;background: #e91e63;
+    border-radius: 15px;
+    padding: 0px 15px;">
+<i class="icon-alarm"></i>  <label id="minutes">00</label>:<label id="seconds">00</label></h5>
+
+            <h5 class="card-title"  style="    margin: auto;">Quiz : {{ quiz.subject.name}}/
+            {% for chapter in quiz.chapters %}
+            {{ chapter.name }}{% endfor %} {% if prerequis is defined and prerequis %}<button class="btn alpha-warning text-warning">Prérequis</button>{% else %} <button class="btn alpha-info text-info">Objectif</button>{% endif %}
+
+</h5> 
+                                    <div class="header-elements">
+                                        <div class="list-icons">
+                                        </div>
+                                    </div>
+          </div>
+    {% if is_granted('ROLE_STUDENT') %} 
+                <div class="row">    
+
+                    <div class="col-md-12">
+                        
+                        <!-- Left aligned buttons -->
+             <div class="card">
+         <div class="card-header bg-white header-elements-inline">
+                    </div>        
+         <form  id="validquiz" class="wizard-form steps-validation"  action="{{path('backend_quizresult',{'quiz':quiz.id})}}"  method ="post"  data-fouc>
+                            {% for part in quiz.parts|sort((a, b) => a.rang <=> b.rang) %}
+
+                               <div class="card-header header-elements-inline card-header bg-pink">
+                                    <h5 class="card-title" style="text-align: center;margin: auto;">
+                                   <b>{{ part.intitule}} </b>  </h5>
+                                </div>
+
+                                {% set count = 1 %}
+            {% for partQuestion in part.partQuestions|sort((a, b) => a.rang <=> b.rang) %} 
+                        <h6>{{count }}</h6>
+                        <fieldset> 
+                            {% set question = partQuestion.question %}
+							{% set count = count + 1 %}
+                            {% set difficulty = question.difficulty %}
+							{% if difficulty==0 %}
+								{% set difficultytext = "Facile" %}
+								{% set difficultyicon = "success" %}
+							{% elseif difficulty==1 %}
+								{% set difficultytext = "Moyen" %}
+								{% set difficultyicon = "warning" %}
+							{% else %}
+								{% set difficultytext = "Dificile" %}
+								{% set difficultyicon = "danger" %}
+							{% endif %}
+
+
+                    <div class="col-lg-12">
+                        <div class="card card-body border-top-primary">
+                                <h6 class="m-0 font-weight-semibold">{% if question.prerequis %}<button class="btn alpha-warning text-warning">Prérequis</button>{% else %} <button class="btn alpha-info text-info">Objectif</button>{% endif %}
+								<button class="btn alpha-{{difficultyicon}} text-{{difficultyicon}}">{{ difficultytext}}</button>
+								{{ question.intitule | raw }} 
+                                 </h6>
+                                <p class="text-muted mb-3"> 
+                                    <div class="form-group pt-2">
+                                        {% for suggestion in question.suggestions %}
+                                    {% if question.type == 'unique' %}
+                                    <div >
+                                        
+                                    <div class="custom-control custom-radio" style="text-align: center;
+                                            padding-top: 5px;
+                                            margin: 3px;
+                                            background: #c7c2e2;
+                                            border: solid 2px #ffffff;
+                                            border-radius: 15px;
+                                            /* color: #FFF; */
+                                            font-weight: bold;
+                                            font-size: 1.5em;">
+                                        <input type="radio" required class="custom-control-input" name="question{{ question.id}}" id="custom_radio_stacked_{{ suggestion.id}}"  value="{{ suggestion.id}}">
+                                        <label class="custom-control-label " for="custom_radio_stacked_{{ suggestion.id}}">{{ suggestion.name | raw }}</label>
+                                    </div>
+
+                                    </div>{% endif %}
+
+                                    {% if question.type == 'multiple' %}
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" name="question{{ question.id}}[]" class="custom-control-input"  value="{{ suggestion.id}}" id="custom_radio_inline_right_checkbox{{ suggestion.id}}"  >
+                                        <label class="custom-control-label" for="custom_radio_inline_right_checkbox{{ suggestion.id}}">{{ suggestion.name | raw }}</label>
+                                    </div>
+
+                                    {% endif %}
+                                        {% endfor %}
+
+                                    {% if question.type == 'text' %}
+                                    <div >
+                                        <input type="text" class="form-control" name="question{{ question.id}}" required ><br><br>
+                                    </div>{% endif %}
+
+                                    {% if question.type == 'blanks' %}
+                                    <div >
+{{ render(controller('App\\Controller\\Backend\\DefaultController::questionblanks', {'question': question.id } )) }}
+                                    </div>{% endif %}
+
+
+                                        </div>
+                        
+                        </div>
+                    </div>
+                </fieldset>
+                                {% endfor %}
+                            {% endfor %}    
+                            
+                                <input type="hidden" name="totalSeconds" id="totalSeconds" value="00">
+                                <input type="hidden" name="iduser" id="iduser" value="{{app.user.id }}">
+                                <input type="hidden" name="prerequis" value="{{ prerequis }}"> 
+                        </form>
+</div>
+                  
+
+                        </div>
+                        <!-- /left aligned buttons -->
+                </div>
+    {% endif %}
+						
+				<!-- /state saving -->
+            </div>
+
+
+
+<script type="text/javascript">
+    
+    $("#startDate").val(new Date().toJSON().slice(0,19));
+	var minutesLabel = document.getElementById("minutes");
+var secondsLabel = document.getElementById("seconds");
+var totalSeconds = 0;
+setInterval(setTime, 1000);
+
+function setTime() {
+  ++totalSeconds;
+  secondsLabel.innerHTML = pad(totalSeconds % 60);
+  minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60));
+  $("#totalSeconds").val(totalSeconds);
+}
+
+function pad(val) {
+  var valString = val + "";
+  if (valString.length < 2) {
+    return "0" + valString;
+  } else {
+    return valString;
+  }
+}
+
+
+</script>
+            
+			
+{% endblock %}

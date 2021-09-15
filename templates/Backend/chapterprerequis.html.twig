@@ -1,0 +1,156 @@
+           {% if ( not app.user.free or chapter.free ) and not chapter.evaluation  %} 
+            <div class="col-lg-4">
+
+                                    <div class="card border-left-3 border-left-primary rounded-left-0" >
+                                        <div class="card-body">
+                                            <div class="d-sm-flex align-item-sm-center flex-sm-nowrap">
+                                                <div class="row col-lg-12">
+
+                                                  <button type="button" class=" bg-indigo-300 btn-labeled btn-labeled-left dropdown-toggle legitRipple" data-toggle="modal" data-target="#modal_chapter{{ chapter.id }}">{{ chapter.name }}  </button>
+                        <!-- Danger modal -->
+                <div id="modal_chapter{{ chapter.id }}" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-pink">
+                                <h6 class="modal-title">{{ chapter.name }}</h6>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <div class="modal-body">
+                                
+                            <div class="row row-tile no-gutters col-12">
+
+                              {% set note = 0 %} 
+                                 {% if prerequis is not null and prerequis.note > 85  %} 
+                              {% set note = prerequis.note  %} 
+                              {% endif %}
+
+                              {% if not quizprerequis or (prerequis is not null and prerequis.note > 85 )   %} 
+                                 <div class="col-12">
+                                <div class="text-center">
+                                    {% if not quizprerequis %}
+                <h6 class="mb-0 font-weight-semibold"> Pas de Quiz Prerequis</h6>{% else %}
+                <h6 class="mb-0 font-weight-semibold"> Quiz Prerequis {{note}}  % </h6>
+                {% endif %}
+              </div>{% set foo = 'success' %} 
+<div class="progress rounded-round">
+                <div class="progress-bar bg-{{foo}}" style="width: {{ note |round(2, 'floor') }}%">
+                  <span>{{ note |round(2, 'floor') }}</span>
+                </div>
+              </div>
+              </div>
+                                <div class="col-12">
+                                {% if chapter.quizchapter is not null %}
+                                    <a href="{{ path('backend_quiz_quizchapter', {'quiz':chapter.quizchapter.id}) }}"  class="btn btn-light btn-block btn-float m-0">
+                                        <i class="icon-graduation2 text-indigo-300 icon-2x"></i>
+                                        <span>Quiz Chapitre</span>
+                                    </a>
+                                {% else  %}
+                                <a href=#"  class="btn btn-light btn-block btn-float m-0">
+                                        <i class="icon-warning text-info icon-2x"></i>
+                                        <span>Pas de Quiz</span>
+                                    </a>
+                                {% endif %}
+                                </div>
+                                
+                                <div class="col-6">
+
+                                    <a href="{{ path('backend_lesson_showchapter', {'chapter':chapter.id}) }}"  class="btn btn-light btn-block btn-float m-0">
+                                        <i class="icon-insert-template text-pink-400 icon-2x"></i>
+                                        <span>Excercices</span>
+                                    </a>
+                                </div>
+                                
+                                <div class="col-6">
+                                    <a href="{{ path('backend_lesson_showchapter_detail', {'chapter':chapter.id}) }}" class="btn btn-light btn-block btn-float m-0">
+                                        <i class="icon-book3 text-success-400 icon-2x"></i>
+                                        <span>Cours</span>
+                                    </a>
+                                </div>
+                            {% else %}
+                              {% set foo = 'danger' %} 
+                              {% set textnote = '-' %}
+                              {% set note = 0 %}
+                              {% set prerequisnote = 0 %}
+                              {% if prerequis is not null  %} 
+                              {% set prerequisnote = note + 5  %}
+                                {% set note = prerequis.note  %} 
+                                {% set textnote = 'Votre dernier Quiz prérequis' %}
+                              {% endif %} 
+                            <div class="col-12">
+                                <div class="text-center">
+                <h6 class="mb-0 font-weight-semibold"> {{ textnote }} {{ prerequisnote |round(2, 'floor') }}% </h6>
+              </div>
+<div class="progress rounded-round">
+                <div class="progress-bar bg-{{foo}}" style="width: {{ prerequisnote |round(2, 'floor') }}%">
+                  <span>{{ note |round(2, 'floor') }}</span>
+                </div>
+              </div>
+              </div>
+                                <div class="col-12">
+                                    <a href="{{ path('backend_generateQuizchapter_chapter_prerequis', {'chapter':chapter.id}) }}"  class="btn btn-light btn-block btn-float m-0">
+                                        <i class="icon-clipboard6 text-danger 0 icon-2x"></i>
+                                        <span>Quiz prérequis</span>
+                                    </a>
+                                </div>
+                                <div class="col-12">
+                                    <a href="{{ path('backend_lesson_showchapter_prerequis', {'chapter':chapter.id}) }}" class="btn btn-light btn-block btn-float m-0">
+                                        <i class="icon-mirror text-danger-400 icon-2x"></i>
+                                        <span>Cours prérequis</span>
+                                    </a>
+                                </div>
+                            {% endif %}
+                            </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /default modal -->
+
+                 
+
+
+
+
+
+
+
+                        </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div> 
+                                 {% elseif chapter.evaluation %}
+  <div class="col-lg-4">
+
+                                    <div class="card border-left-3 border-left-primary rounded-left-0">
+                                        <div class="card-body">
+                                            <div class="d-sm-flex align-item-sm-center flex-sm-nowrap">
+                                                <div class="row col-lg-12">
+
+                                                  <a href="{{ path('backend_generateQuizchapter_chapter', {'chapter':chapter.id}) }}" class="btn bg-teal btn-labeled btn-labeled-left legitRipple"  aria-expanded="false">{{ chapter.name }}  </a>
+
+                        </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {% else %}
+  <div class="col-lg-4">
+
+                                    <div class="card border-left-3 border-left-primary rounded-left-0">
+                                        <div class="card-body">
+                                            <div class="d-sm-flex align-item-sm-center flex-sm-nowrap">
+                                                <div class="row col-lg-12">
+
+                                                  <button type="button" class="btn bg-gary btn-labeled btn-labeled-left dropdown-toggle legitRipple" data-toggle="dropdown" aria-expanded="false">{{ chapter.name }}  </button>
+
+                        </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}

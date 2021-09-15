@@ -1,0 +1,214 @@
+{# templates/index.html.twig #}
+{% extends 'Backend/layout.html.twig' %}
+{% block title %} Bienvenue {% endblock %}
+  {% block scriptsheets %}
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/datatables.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/selects/select2.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_basic.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/jszip/jszip.min.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/pdfmake/pdfmake.min.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/pdfmake/vfs_fonts.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/buttons.min.js')) }}"></script>
+
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/invoice_archive.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_extension_buttons_html5.js')) }}"></script>
+    <style type="text/css">
+      .buttons-pdf, .buttons-copy{display: none}
+    </style>
+  <!-- /theme JS files -->
+    {% endblock %}
+
+
+{% block content %}
+    <!-- Content area -->
+            <div class="content">
+
+        <!-- State saving -->
+        
+           <div class="card-header header-elements-inline card-header bg-pink">
+            <h5 class="card-title"  style="    margin: auto;">Résultat Quiz : {{ quiz.subject.name}}/
+            {% for chapter in quiz.chapters %}
+            {{ chapter.name }}{% endfor %} {% if prerequis is defined and prerequis %}<button class="btn alpha-warning text-warning">Prérequis</button>{% else %} <button class="btn alpha-info text-info">Objectif</button>{% endif %}
+
+</h5> 
+                                    <div class="header-elements">
+                                        <div class="list-icons">
+                                        </div>
+                                    </div>
+          </div>
+                  
+    {% if quizresult is not null %}  
+                  <!-- Left aligned buttons -->
+                   <div class="col-md-12 row">
+                        <div class=" col-md-12 card">
+                                <div class="card-header ">
+                                    <h2 class="card-title">
+                                      {% set message = '' %}
+                                     {% set icon = 'icon-reading' %}
+                                     {% set fooquiz = 'danger' %}
+                                {% if quizresult.note > 85 %}{% set fooquiz = 'success' %} {% set icon = 'icon-trophy3' %}
+ {% set message = 'BRAVO tu es prêt à cette nouvelle aventure maintenant' %}
+                                {% endif %}
+                                {% if quizresult.note < 86 %}{% set fooquiz = 'info' %} {% set icon = 'icon-medal-second' %}
+ {% set message = 'Avant de commencer une nouvelle aventure on remédier quelques lacunes' %}
+                                 {% endif %}
+                                {% if quizresult.note < 60 %}{% set fooquiz = 'warning' %} {% set icon = 'icon-reading' %} {% endif %}
+                                {% if quizresult.note < 40 %}{% set fooquiz = 'danger' %}  {% set icon = 'icon-notification2' %}{% endif %}
+                                {% if quizresult.note == 100 %}{% set fooquiz = 'teal' %} {% set icon = 'icon-trophy4' %}{% endif %}
+
+
+                                
+<div class="card text-center">
+                  <div class="card-body">
+
+                    <!-- Progress counter -->
+					
+<div class="col-lg-12 row">	
+<div class="col-lg-12">			
+				  <div class="svg-center position-relative">
+<i class="{{icon}} icon-2x text-{{fooquiz}} border-{{fooquiz}} border-3 rounded-round p-3 mb-3 mt-1"></i>
+                      <div>{{quiz.intitule}}</div></div>
+                    <!-- /progress counter -->
+                    <div class="progress mb-3">
+                <div class="progress-bar progress-bar-striped bg-{{fooquiz}}" style="width: {{quizresult.note}}%">
+                  <span class="sr-only">{{quizresult.note}}% Complete</span>
+                </div>
+              </div>
+			</div>
+			{% set totalsuccess = 0 %}
+			{% set totalfailed = 0 %}
+            {% set totalgaps = 0 %}
+			 {% for gapquiz in quizresult.gapQuizzes %} 
+			     {% set totalgaps = totalgaps +1 %}
+			 {% if gapquiz.failed < gapquiz.success %}
+		{% set totalsuccess = totalsuccess +1 %}
+		{% else %}
+		{% set totalfailed = totalfailed + 1 %}
+		{% endif  %}
+		
+			  {% endfor %}
+	{% if totalgaps > 1 %}		  
+<div class="col-lg-4" >
+<div class="card card-body border-top-info text-center" style="background: #ffe1d7;">
+<div class="text-center">
+<i class="icon-warning  icon-2x text-danger border-danger border-3 rounded-round p-3 mb-3 mt-1"></i>
+<h5 class="card-title">Compétence à developper <span class="badge bg-danger badge-pill">
+{{ totalfailed }}</span></h5>
+</div>
+</div>
+</div>
+
+<div class="col-lg-4">
+<div class="card card-body border-top-info text-center"  style="background: #d6ffd8;">
+<div class="text-center">
+<i class="icon-atom2 icon-2x text-success border-success border-3 rounded-round p-3 mb-3 mt-1"></i>
+<h5 class="card-title">Compétences acquises
+ <span class="badge bg-success badge-pill">
+{{ totalsuccess }}</span></h5>
+</div>
+</div>
+</div>
+{% else  %}
+<div class="col-lg-4" >
+</div>
+{% endif  %}
+<div class="col-lg-4">  
+
+                       <i class="icon-alarm  icon-2x text-{{fooquiz}} border-{{fooquiz}} border-3 rounded-round p-3 mb-3 mt-1">
+					   <br>{{ quizresult.duration // 60 }}:{{ quizresult.duration % 60 }} </i> 
+
+<i class="{{icon}}  icon-2x text-{{fooquiz}} border-{{fooquiz}} border-3 rounded-round p-3 mb-3 mt-1">
+                       <br> {% if prerequis is defined and prerequis %}   
+                       {{quizresult.note}}  % 
+                       {% else %}
+                       {{ (quizresult.note /5 ) }}/20
+                      {% endif %} </i> 
+
+					 
+                   
+					
+
+</div>  
+         <h2 class="pt-1 mt-2 mb-1 col-lg-12" ><button type="button" style="font-size: initial;" class=" alpha-blue text-{{fooquiz}} border-{{fooquiz}} legitRipple"> {{ message }}  % </button></h2>
+
+</div>
+
+				
+
+    {% for gapquiz in quizresult.gapQuizzes %} 
+	{% set pourcentage = (gapquiz.success/gapquiz.total)*100 %}
+    {% set foo = 'danger' %}  {% set icon = 'danger' %}
+
+    {% if pourcentage >= 50 %}{% set foo = 'warning' %} {% set icon = 'warning' %}  {% endif %}
+
+{% if pourcentage >= 80 %}{% set foo = 'success' %} {% set icon = 'atom2' %}  {% endif %}
+{% if pourcentage == 100 %}{% set foo = 'success' %}  {% set icon = 'atom2' %} {% endif %}
+
+	   <div class="col-lg-12 row alpha-{{foo}}" style="
+    border: 1px solid #bfcecc;
+    border-radius: 10px;
+    margin-top: 5px;
+    padding: 10px;">	
+<div class="col-lg-7">		
+
+<h6> <span class="badge bg-{{ foo }} badge-pill">
+<i class="icon-{{icon}} mr-2"></i> {{ gapquiz.success }} / {{ gapquiz.total }} </span>  {{ gapquiz.gap.name }} </h6>
+
+<div class="progress rounded-round">
+<div class="progress-bar bg-{{foo}}" style="width: {{ pourcentage |round(2, 'floor') }}%">
+<span>{{ pourcentage |round(2, 'floor') }}</span>
+</div>
+</div>
+</div> 
+<div class="col-lg-5">
+        {% if is_granted('ROLE_STUDENT') %} 
+<div class="btn-group show">
+                                    <a href="{{ path('backend_generateQuizgaps_gap_difficulty', {'gap':gapquiz.gap.id,'difficulty':'4'}) }}" type="button" class="btn bg-primary  btn-labeled btn-labeled-left dropdown-toggle legitRipple" aria-expanded="true"><b><i class="icon-reading"></i></b>Remédiation</a>
+                                   
+                                </div>
+									
+
+<div class="btn-group show">
+ <a href="{{ path('backend_lesson_showchapter_detail', {'chapter':gapquiz.gap.chapter.id}) }}" type="button" class="btn bg-success  btn-labeled btn-labeled-left legitRipple" aria-expanded="true">
+ <b><i class="icon-book3 text-success-400 icon-2x"></i></b>Cours</a>
+ 
+									
+</div>
+ {% endif %}
+								
+</div> </div>   
+   {% endfor %}
+
+
+<a class="btn bg-pink btn-labeled btn-labeled-left rounded-round" 
+    href="{{ path('backend_quizresultshowanswer', {'quiz':quiz.id,'quizresult':quizresult.id}) }}" style="margin-top:10px">
+    <i class="icon-bookmark"></i> La correction</a>
+                    
+
+
+                  </div>
+                </div>
+                                    </h2>
+                                    <p class="card-title">
+                                    {{ quiz.description}} </p>
+                                </div>
+
+
+                           </div>
+
+                        </div>
+
+        {% endif %}
+      
+        <!-- /state saving -->
+            </div>
+
+
+
+            
+{% endblock %}

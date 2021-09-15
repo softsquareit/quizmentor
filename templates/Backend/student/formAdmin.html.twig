@@ -1,0 +1,232 @@
+{# templates/index.html.twig #}
+{% extends 'Backend/layout.html.twig' %}
+    {% block scriptsheets %}
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/datatables.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/selects/select2.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_basic.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/jszip/jszip.min.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/pdfmake/pdfmake.min.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/pdfmake/vfs_fonts.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/buttons.min.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/selects/select2.min.js')) }}"></script> 
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/form_select2.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/invoice_archive.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_extension_buttons_html5.js')) }}"></script>
+    <style type="text/css">
+        .buttons-pdf, .buttons-copy{display: none}
+    </style>
+    <!-- /theme JS files -->
+    {% endblock %}
+
+
+{% block content %}
+    <!-- Content area -->
+            <div class="content">
+
+                <!-- Form validation -->
+
+                <!-- State saving -->
+               <div class="card">
+                                <div class="card-header header-elements-inline card-header bg-teal">
+                                    <h5 class="card-title"> <i class="icon-users4"></i> Informations Personnelles</h5>
+                                    <div class="header-elements">
+                                        <div class="list-icons">
+                                        </div>
+                                    </div>
+                                </div>
+
+                         {{ form_start(form, {'attr': {'validate': 'validate','class': 'col-lg-12'  }}) }}
+                                <div class="card-body row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Nom:</label>
+                                            {{ form_widget(form.firstName, {'attr': {'required' :'required','class': 'form-control col-lg-4 ','placeholder':'firstName'}}) }}
+                                            {{ form_errors(form.firstName) }}
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Prénom:</label>
+                                            {{ form_widget(form.lastName, {'attr': {'required' :'required','class': 'form-control col-lg-4 ','placeholder':'lastName '}}) }}
+                                            {{ form_errors(form.lastName) }}
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Email:</label>
+                                            {{ form_widget(form.email, {'attr': {'required' :'required','class': 'form-control col-lg-4 ','placeholder':'email'}}) }}
+                                            {{ form_errors(form.email) }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>phone:</label>
+                                            {{ form_widget(form.phone, {'attr': {'required' :'required','class': 'form-control col-lg-4 ','placeholder':'phone'}}) }}
+                                            {{ form_errors(form.phone) }}
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Famille:</label>
+                                            {{ form_widget(form.family, {'attr': {'required' :'required','class': 'form-control col-lg-4  select-search ','placeholder':'Famille'}}) }}
+                                            {{ form_errors(form.family) }} 
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Classe:</label>
+                                            {{ form_widget(form.classroom, {'attr': {'required' :'required','class': 'form-control  select-search col-lg-4 ','placeholder':'classroom'}}) }}
+                                            {{ form_errors(form.classroom) }}
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Niveaux:</label>
+                                            {{ form_widget(form.level, {'attr': {'required' :'required','class': 'form-control col-lg-4  select-search ','placeholder':'level'}}) }}
+                                            {{ form_errors(form.level) }}
+                                        </div>
+
+
+                                     </div>
+
+                                </div>
+
+                                <div class="card-footer d-flex justify-content-between align-items-center">
+                                    <a href="{{ path('backend_student_liste') }}"  class="btn btn-light">Annuler <i class="icon-cross2 ml-2"></i></a>
+                                    <button type="submit" class="btn bg-success">Valider <i class="icon-checkmark ml-2"></i></button>
+                                </div>
+                        {{ form_end(form) }}
+
+                        
+                                <div class="card-body row">
+
+                                    <div class="col-lg-6">
+                                       {{ form_start(formlogin, {'attr': {'validate': 'validate','class': 'col-lg-12'  }}) }}
+
+                                        <div class="form-group row">
+                                            <label class="col-lg-12 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>password:</label>
+                                            {{ form_widget(formlogin.password, {'attr': {'required' :'required','class': 'form-control col-lg-12 ','placeholder':'password ','value':''}}) }}
+                                            {{ form_errors(formlogin.password) }}
+                                            <label class="col-lg-12 col-form-label font-weight-semibold"><i class="icon-pencil7"></i>Confirme password:</label>
+                                            <input type="password" name="oldpassword" class="form-control col-lg-12 ">
+                                        </div>
+                                    <button type="submit" class="btn bg-success">Modifier Mot de passe <i class="icon-checkmark ml-2"></i></button>
+                        {{ form_end(formlogin) }}
+
+                                     </div>
+                                </div>
+                </div>
+                <!-- /state saving -->
+
+                <div class="card">
+                    <div class="card-header header-elements-inline card-header bg-teal">
+                                    <h5 class="card-title"> <i class="icon-user"></i>  Élève : {{ligne.firstName }} {{ligne.lastName }}</h5>
+                                    <div class="header-elements">
+                                        <div class="list-icons">
+                                           <a href="{{ path('backend_student_liste') }}" class="btn alpha-blue text-blue-800 border-blue-600">Liste des Elèves</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                        <h5 class="card-title"><i class="icon-earth"></i> Liste des Lacunes </h5>
+
+         <table class="table datatable-button-html5-columns">
+                        <thead>
+                            <tr>
+                                <th class="">Id</th>
+                                <th >Lacune</th>
+                                <th >Total</th>
+                                <th >réussite</th>
+                                <th >failed</th>
+                                <th >Pourcentage</th>
+                                <th >Chapitre</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for gapquiz in lacuneliste %}     
+                            <tr>
+                               <td> {{ gapquiz.gap.id }}</td>
+                               <td> {{ gapquiz.gap.name }}</td>
+                               <td><button type="submit" class="btn bg-primary legitRipple">{{ gapquiz.total }} </button> </td>
+                               <td> <button type="submit" class="btn bg-success legitRipple">{{ gapquiz.success }}</button></td>
+                               <td><button type="submit" class="btn bg-danger legitRipple"> {{ gapquiz.failed }} </button></td>
+                               <td>
+                                {% set pourcentage = (gapquiz.success/gapquiz.total)*100 %}
+                                {% if pourcentage > 60 %}{% set foo = 'success' %} {% endif %}
+                                {% if pourcentage < 60 %}{% set foo = 'warning' %} {% endif %}
+                                {% if pourcentage < 40 %}{% set foo = 'danger' %} {% endif %}
+                                {% if pourcentage == 100 %}{% set foo = 'teal' %} {% endif %}
+                                
+                                <div class="text-center">
+                <h6 class="mb-0 font-weight-semibold">{{pourcentage|round(2, 'floor')}}  % </h6>
+              </div>
+<div class="progress rounded-round">
+                <div class="progress-bar bg-{{foo}}" style="width: {{ pourcentage |round(2, 'floor') }}%">
+                  <span>{{ pourcentage |round(2, 'floor') }}</span>
+                </div>
+              </div>
+                                </td>
+                               <td><span class="btn btn-outline-info btn-sm legitRipple"> {% if gapquiz.gap.chapter is not null and gapquiz.gap.chapter %}{{gapquiz.gap.chapter.name}}{% endif %} </span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+</div>
+
+
+
+<div class="card">
+                    <div class="card-header header-elements-inline card-header bg-teal">
+                        <h5 class="card-title"><i class="icon-earth"></i> Liste des quizz  </h5>
+                                    <div class="header-elements">
+                                    </div>
+                    </div>
+               <table class="table datatable-button-html5-columns">
+                        <thead>
+                            <tr>
+                                <th class="">Id</th>
+                                <th >Quiz</th>
+                                <th >Date</th>
+                                <th >Durée</th>
+                                <th >Note</th>
+                                <th >Matiere</th>
+                                <th >Chapitre</th>
+                                <th >Action</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                          {% for quizresult in quizresultliste %} 
+                            <tr>
+                               <td> {{quizresult.id}}</td>
+                               <td>  {{quizresult.quiz.intitule}}</td>
+                               <td> {{quizresult.dateend | date('H:i d-m-Y') }}  </td>
+                               <td>  {{quizresult.duration}}</td>
+                               <td> 
+                                <div class="text-center">
+                <h6 class="mb-0 font-weight-semibold">{{quizresult.note}}  % </h6>
+              </div>
+                                {% if quizresult.note > 60 %}{% set foo = 'success' %} {% endif %}
+                                {% if quizresult.note < 60 %}{% set foo = 'warning' %} {% endif %}
+                                {% if quizresult.note < 40 %}{% set foo = 'danger' %} {% endif %}
+                                {% if quizresult.note == 100 %}{% set foo = 'teal' %} {% endif %}
+<div class="progress rounded-round">
+                <div class="progress-bar bg-{{foo}}" style="width: {{ quizresult.note |round(2, 'floor') }}%">
+                  <span>{{ quizresult.note |round(2, 'floor') }}</span>
+                </div>
+              </div>
+                               </td>
+                                <td>{% if quizresult.quiz.subject is not null %}{{ quizresult.quiz.subject.name }} {% endif %}</td> 
+                                <td>{% for chapter in quizresult.quiz.chapters %} <span class="btn btn-outline-info btn-sm legitRipple"> {{ chapter.name }} </span> {% endfor %}</td>
+                                <td ><a href="{{ path('backend_quizresultshow', {'quiz':quizresult.quiz.id,'quizresult':quizresult.id}) }}"
+                           class="btn btn-outline-info btn-sm"
+                           title="Cliquer pour archiver"><i class="icon-pencil7 mr-2"></i></a></td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                    </table>
+</div>
+ 
+           
+            </div>
+            
+{% endblock %}

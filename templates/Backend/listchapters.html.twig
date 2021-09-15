@@ -1,0 +1,68 @@
+{# templates/index.html.twig #}
+{% extends 'Backend/layout.html.twig' %}
+{% block title %} Bienvenue {% endblock %}
+	{% block scriptsheets %}
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/datatables.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/selects/select2.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_basic.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/jszip/jszip.min.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/pdfmake/pdfmake.min.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/pdfmake/vfs_fonts.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/buttons.min.js')) }}"></script>
+
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/invoice_archive.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_extension_buttons_html5.js')) }}"></script>
+    <style type="text/css">
+    	.buttons-pdf, .buttons-copy{display: none}
+    </style>
+	<!-- /theme JS files -->
+    {% endblock %}
+
+
+{% block content %}
+    <!-- Content area -->
+            <div class="content">
+
+				<!-- State saving -->
+				
+					<div class="card-header header-elements-inline card-header bg-teal">
+                         <h4 class="card-title"><i class="icon-reading mr-2"></i>   {{ subject.name}} / <i class="icon-stats-bars4 mr-2"></i>{{ trimester.name }}</h4>
+                         <div class="header-elements">
+                            <div class="list-icons">
+                            </div>
+                        </div>
+					</div>
+
+                    <div class="mb-3">
+                        <h6 class="mb-0 font-weight-semibold">
+                            
+                        </h6>
+                        <span class="text-muted d-block"></span>
+                    </div>
+    {% if is_granted('ROLE_STUDENT') %} 
+		{% if chapters is not null %}  
+
+                <div class="row">
+                    {% for chapter in chapters %}    
+                        {% if chapter.status %}
+               {{ render(controller('App\\Controller\\Backend\\DefaultController::chapterprerequis', {'chapter': chapter.id } )) }}
+                        {% endif  %}
+                    {% endfor  %}
+                </div>
+
+        {% endif %}
+    {% endif %}
+						
+				<!-- /state saving -->
+            </div>
+
+
+
+
+            
+{% endblock %}

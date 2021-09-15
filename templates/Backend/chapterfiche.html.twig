@@ -1,0 +1,143 @@
+{# templates/index.html.twig #}
+{% extends 'Backend/layout.html.twig' %}
+{% block title %} Bienvenue {% endblock %}
+	{% block scriptsheets %}
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/datatables.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/forms/selects/select2.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_basic.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/jszip/jszip.min.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/pdfmake/pdfmake.min.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/pdfmake/vfs_fonts.min.js')) }}"></script>
+    <script src="{{ absolute_url(asset('backend/global_assets/js/plugins/tables/datatables/extensions/buttons.min.js')) }}"></script>
+
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/invoice_archive.js')) }}"></script>
+
+    <script src="{{ absolute_url(asset('backend/global_assets/js/demo_pages/datatables_extension_buttons_html5.js')) }}"></script>
+    <style type="text/css">
+    	.buttons-pdf, .buttons-copy{display: none}
+    </style>
+	<!-- /theme JS files -->
+    {% endblock %}
+
+
+{% block content %}
+    <!-- Content area -->
+            <div class="content">
+
+				<!-- State saving -->
+				
+					<div class="card-header header-elements-inline card-header bg-teal">
+						<h5 class="card-title"> Bienvenue {{ app.user.firstName }} {{ app.user.lastName }}</h5>
+                                    <div class="header-elements">
+                                        <div class="list-icons">
+                                                {% if is_granted('ROLE_STUDENT') %} 
+                                                    {% if app.user.classroom is not null %} 
+                                                        {{ app.user.classroom.name }}
+                                                    {% endif %}
+                                                {% endif %}
+                                        </div>
+                                    </div>
+					</div>
+
+
+                    <div class="card-header header-elements-inline card-header bg-info">
+                        <h5 class="card-title"> Matière {{ chapter.subject.name }} / <span class="badge bg-danger badge-pill">
+                                {{ chapter.trimester.name }}</span></h5>
+                        <div class="header-elements">
+                            <div class="list-icons"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="mb-0 font-weight-semibold">
+                            
+                        </h6>
+                        <span class="text-muted d-block"></span>
+                    </div>
+    {% if is_granted('ROLE_STUDENT') %} 
+		{% if chapter is not null %}  
+
+                <div class="row">  
+
+                   <div class="col-lg-3"></div>
+                   <div class="col-lg-6">
+                                    <div class="card border-left-3 border-left-primary rounded-left-0">
+                                        <div class="card-body">
+                                            <div class="d-sm-flex align-item-sm-center flex-sm-nowrap">
+                                                <div class="row col-lg-12">
+                                                  
+                                                               <div class="tree-sorting card card-body border-left-success border-left-2">
+                                    <ul class="mb-0">
+                                         <h2 class="text-center">{{ chapter.name }}</h2>
+                            {% for parent in chapter.sons %}
+                                        <li class="expanded"><button style="margin: 2px;" type="button" class="btn bg-slate-700 btn-ladda btn-ladda-progress ladda-button" data-style="expand-left" data-spinner-size="20">{{ parent.name }}</button><a href="{{ path('backend_generateQuizchapter_chapter', {'chapter':parent.id}) }}" type="button" class="btn bg-pink-400 btn-icon rounded-round"><i class="icon-insert-template "></i> Excercice</a> <a href="{{ path('backend_lesson_showchapter', {'chapter':parent.id}) }}" class="btn bg-success btn-icon rounded-round"><i class="icon-book3"></i> Cours</a>
+                                            <ul>
+                                    {% for son in parent.sons %}
+                                                <li><span style="margin: 2px;" class="btn bg-primary btn-ladda btn-ladda-progress ladda-button" data-style="expand-left" data-spinner-size="20">{{ son.name }}</span>
+                                                    <a href="{{ path('backend_generateQuizchapter_chapter', {'chapter':son.id}) }}" type="button" class="btn bg-pink-400 btn-icon rounded-round"><i class="icon-insert-template "></i> Excercice</a> <a href="{{ path('backend_lesson_showchapter', {'chapter':son.id}) }}" class="btn bg-success btn-icon rounded-round"><i class="icon-book3"></i> Cours</a>
+                                                    <ul>
+                                                        {% for sonson in son.sons %}
+                                                        <li><button style="margin: 2px;"  type="button" class="btn  bg-blue-400 btn-ladda btn-ladda-progress ladda-button" data-style="expand-left" data-spinner-size="20">{{ sonson.name }}</button>
+                                                             <a href="{{ path('backend_generateQuizchapter_chapter', {'chapter':sonson.id}) }}" type="button" class="btn bg-pink-400 btn-icon rounded-round"><i class="icon-insert-template "></i> Excercice</a> <a href="{{ path('backend_lesson_showchapter', {'chapter':sonson.id}) }}" class="btn bg-success btn-icon rounded-round"><i class="icon-book3"></i> Cours</a>
+                                                        </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </li>
+                                    {% endfor %}
+                                            </ul>
+                                        </li>
+                            {% endfor %}
+                                    </ul>
+                                </div>
+
+                                                            <div class="row row-tile no-gutters col-12">
+                                <div class="col-6">
+                                    <a href="{{ path('backend_listchapters', {'trimester':chapter.trimester.id,'subject':chapter.subject.id}) }}"  class="btn btn-light btn-block btn-float m-0">
+                                        <i class="icon-reading text-blue-400 icon-2x"></i>
+                                        <span>{{chapter.subject.name }} - {{chapter.trimester.name }}</span>
+                                    </a>
+
+                                    <a href="{{ path('backend_generateQuizchapter_chapter', {'chapter':chapter.id}) }}"  class="btn btn-light btn-block btn-float m-0">
+                                        <i class="icon-insert-template text-pink-400 icon-2x"></i>
+                                        <span>Excercices</span>
+                                    </a>
+                                </div>
+                                
+                                <div class="col-6">
+                                    <a href="{{ path('backend_generateQuizchapter_chapter', {'chapter':chapter.id}) }}"  class="btn btn-light btn-block btn-float m-0">
+                                        <i class="icon-graduation2 text-indigo-300 icon-2x"></i>
+                                        <span>Devoir Quiz</span>
+                                    </a>
+
+                                    <a  href="{{ path('backend_lesson_showchapter', {'chapter':chapter.id}) }}" class="btn btn-light btn-block btn-float m-0">
+                                        <i class="icon-book3 text-success-400 icon-2x"></i>
+                                        <span>Cours</span>
+                                    </a>
+                                </div>
+                            </div>
+                                                </div>
+        
+                                            </div>
+                                        </div>
+
+                                        <div class="card-footer d-sm-flex justify-content-sm-between align-items-sm-center">
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                </div>
+
+        {% endif %}
+    {% endif %}
+						
+				<!-- /state saving -->
+            </div>
+
+
+
+
+            
+{% endblock %}
